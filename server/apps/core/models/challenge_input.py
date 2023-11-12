@@ -8,8 +8,8 @@ class ChallengeInput(models.Model):
         on_delete=models.CASCADE,
         db_index=True,
     )
-    name = models.TextField()
-    files = ArrayField(models.TextField())
+    name = models.CharField(max_length=255)
+    files = ArrayField(models.CharField(max_length=255))
 
     def __str__(self):
         return self.name

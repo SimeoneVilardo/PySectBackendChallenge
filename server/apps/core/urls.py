@@ -8,6 +8,6 @@ from server.apps.core.views.UploadView import UploadView
 urlpatterns = [
     path('dummy/', DummyAPIView.as_view(), name='dummy_api'),
     path('upload/', UploadView.as_view(), name='upload_api'),
-    path('run/<int:pk>/', RunnerView.as_view(), name='run_api'),
+    path('run-challenge/<int:challenge_id>/input/<int:input_id>/', RunnerView.as_view(), name='run_api'),
     path('challenge/', ChallengeView.as_view(), name='challenge_api'),
 ]

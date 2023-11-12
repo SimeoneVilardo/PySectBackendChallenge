@@ -141,3 +141,6 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
     )
 }
+
+BASE_INPUT_PATH = 'server/apps/core/inputs'
+BASE_SRC_PATH = 'server/apps/core/uploads'

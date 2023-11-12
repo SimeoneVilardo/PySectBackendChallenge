@@ -5,7 +5,7 @@ import os
 @dataclass
 class RunnerOutput:
     output: list
-    errors: list
+    error: list
 
 class RunnerService:
     env = os.environ.copy()
@@ -26,8 +26,8 @@ class RunnerService:
     def execute_with_input(cls, source_file: str, input_array = list()) -> RunnerOutput:
         process = subprocess.Popen(['python', source_file], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=cls.env)
         input_string = '\n'.join(input_array)
-        output, errors = process.communicate(input=input_string)
+        output, error = process.communicate(input=input_string)
         output = list(filter(None, output.split('\n')))
-        errors = list(filter(None, errors.split('\n')))
-        result = RunnerOutput(output, errors)
+        error = list(filter(None, error.split('\n')))
+        result = RunnerOutput(output, error)
         return result
