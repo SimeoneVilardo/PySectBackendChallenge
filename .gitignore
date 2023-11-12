@@ -18,6 +18,8 @@
 !docs/
 !docs/**
 !pytest.ini
+server/apps/core/uploads
+server/apps/core/inputs
 docker/config/.env
 docker/config/.env.local.shell
 docs/_build/
