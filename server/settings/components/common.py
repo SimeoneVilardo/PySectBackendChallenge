@@ -142,5 +142,7 @@ REST_FRAMEWORK = {
     )
 }
 
-BASE_INPUT_PATH = 'server/apps/core/inputs'
-BASE_SRC_PATH = 'server/apps/core/uploads'
+BASE_INPUT_PATH = 'server/apps/core/storage/inputs'
+BASE_OUTPUT_PATH = 'server/apps/core/storage/outputs'
+BASE_USER_OUTPUT_PATH = 'server/apps/core/storage/user_outputs'
+BASE_SRC_PATH = 'server/apps/core/storage/uploads'

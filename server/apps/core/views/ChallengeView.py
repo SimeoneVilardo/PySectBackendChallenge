@@ -2,34 +2,37 @@
 from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.views import APIView
-from server.apps.core.models import Challenge, ChallengeInput
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from server.apps.core.models import Challenge, ChallengeInput, ChallengeSubmission
 
 class ChallengeInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChallengeInput
-        fields = ('id', 'name', 'files')
+        fields = '__all__'
+
+
+class ChallengeSubmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChallengeSubmission
+        fields = '__all__'
+
 
 class ChallengeSerializer(serializers.ModelSerializer):
-    challenge_inputs = ChallengeInputSerializer(many=True)
+    challenge_inputs = ChallengeInputSerializer(many=True, read_only=True)
+    challenge_submissions = ChallengeSubmissionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Challenge
-        fields = ('id', 'name', 'reward', 'challenge_inputs')
+        fields = '__all__'
 
-    def create(self, validated_data):
-        inputs_data = validated_data.pop('challenge_inputs')
-        challenge = Challenge.objects.create(**validated_data)
-        for input_data in inputs_data:
-            ChallengeInput.objects.create(challenge=challenge, **input_data)
-        return challenge
+class ChallengeView(GenericAPIView, ListModelMixin, RetrieveModelMixin):
+    queryset = Challenge.objects.all()
+    serializer_class = ChallengeSerializer
+    lookup_field = 'id'
 
-class ChallengeView(APIView):
-    def post(self, request, *args, **kwargs):
-        serializer = ChallengeSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, *args, **kwargs):
+        if 'id' in kwargs:
+            return self.retrieve(request, *args, **kwargs)
+        else:
+            return self.list(request, *args, **kwargs)

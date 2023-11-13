@@ -1,5 +1,10 @@
 from django.contrib import admin
-from .models import Challenge, ChallengeInput, ChallengeResult
+from .models import User, Challenge, ChallengeInput, ChallengeSubmission
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    search_fields = ('name',)
 
 @admin.register(Challenge)
 class ChallengeAdmin(admin.ModelAdmin):
@@ -8,21 +13,10 @@ class ChallengeAdmin(admin.ModelAdmin):
 
 @admin.register(ChallengeInput)
 class ChallengeInputAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'challenge', 'files')
+    list_display = ('id', 'name', 'challenge')
     search_fields = ('name',)
 
-@admin.register(ChallengeResult)
-class ChallengeResultAdmin(admin.ModelAdmin):
-    list_display = ('id', 'challenge', 'output', 'error')
-
-    def has_add_permission(self, request):
-        # Disable the 'Add' button
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        # Disable the 'Change' button
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        # Disable the 'Delete' button
-        return False
+@admin.register(ChallengeSubmission)
+class ChallengeSubmissionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'challenge', 'src', 'output', 'error')
+    search_fields = ('challenge',)

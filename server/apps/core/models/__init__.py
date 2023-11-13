@@ -1,3 +1,4 @@
 from .challenge import Challenge
 from .challenge_input import ChallengeInput
-from .challenge_result import ChallengeResult
+from .challenge_submission import ChallengeSubmission
+from .user import User
