@@ -1,5 +1,6 @@
 import time
 from django.conf import settings
+from django.http import Http404
 from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -20,7 +21,12 @@ class ChallengeSubmissionRunView(UpdateAPIView):
     serializer_class = ChallengeSubmissionSerializer
 
     def get_object(self):
-        challenge_submission = ChallengeSubmission.objects.select_related('challenge').prefetch_related('challenge__challenge_inputs').get(challenge_id=self.kwargs['id'])
+        try:
+            challenge_submission = ChallengeSubmission.objects.select_related('challenge').prefetch_related('challenge__challenge_inputs').get(id=self.kwargs['id'])
+        except ChallengeSubmission.DoesNotExist:
+            raise Http404()
+        if challenge_submission.status != ChallengeSubmissionStatusChoices.READY:
+            raise serializers.ValidationError({"error": "Challenge submission is already run"})
         return challenge_submission
 
     def partial_update(self, request, *args, **kwargs):

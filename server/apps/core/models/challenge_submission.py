@@ -34,6 +34,7 @@ class ChallengeSubmission(models.Model):
     def __str__(self):
         return self.src
     
+    '''
     def clean(self):
         # Check if the status is 'SUCCESS' before enforcing the unique constraint
         if self.status == ChallengeSubmissionStatusChoices.SUCCESS:
@@ -49,6 +50,7 @@ class ChallengeSubmission(models.Model):
                 )
 
         super().clean()
+    '''
     
     class Meta:
         db_table = 'challenge_submissions'
@@ -56,9 +58,11 @@ class ChallengeSubmission(models.Model):
         verbose_name = 'python challenge submission'
         verbose_name_plural = 'python challenge submissions'
 
+        '''
         constraints = [
             models.UniqueConstraint(
                 fields=['challenge', 'user', 'status'],
                 name='unique_challenge_user_success'
             )
         ]
+        '''
