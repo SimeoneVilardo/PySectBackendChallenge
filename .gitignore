@@ -3,6 +3,7 @@
 !.editorconfig
 !poetry.lock
 !pyproject.toml
+!requirements.txt
 !README.md
 !CHANGELOG.md
 !server/
