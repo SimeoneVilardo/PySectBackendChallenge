@@ -22,3 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(core_urls)),
 ]
+
+admin.site.site_header = "PySect Admin"
+admin.site.site_title = "PySect Admin Portal"
+admin.site.index_title = "Welcome to PySect Admin Portal"
