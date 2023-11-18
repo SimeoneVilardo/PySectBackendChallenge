@@ -1,7 +1,7 @@
 # This Dockerfile uses multi-stage build to customize DEV and PROD images:
 # https://docs.docker.com/develop/develop-images/multistage-build/
 
-FROM arm64v8/python:3.11 AS builder_image
+FROM arm64v8/python:3.11-bullseye AS builder_image
 
 LABEL maintainer="simeone.vilardo@gmail.com"
 LABEL vendor="PySect"
@@ -58,7 +58,7 @@ ENV PATH="/opt/django/pypkgs/bin:$PATH"
 RUN echo "source /opt/django/pypkgs/bin/activate" >> /root/.bashrc
 
 # Cleanup with a new stage:
-FROM python:3.11-slim-bullseye as runner_image
+FROM arm64v8/python:3.11-bullseye as runner_image
 
 ARG DJANGO_ENV
 
