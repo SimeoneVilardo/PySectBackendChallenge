@@ -1,7 +1,7 @@
 # This Dockerfile uses multi-stage build to customize DEV and PROD images:
 # https://docs.docker.com/develop/develop-images/multistage-build/
 
-FROM python:3.11 AS builder_image
+FROM arm64v8/python:3.11 AS builder_image
 
 LABEL maintainer="simeone.vilardo@gmail.com"
 LABEL vendor="PySect"

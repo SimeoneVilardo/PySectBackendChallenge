@@ -18,7 +18,7 @@ class DummyView(APIView):
 
     def run_docker(self, src_path, input_txt_path, output_txt_path, error_txt_path):
         container_name = "pysect-runner"
-        docker_image = "python:3.8"
+        docker_image = "arm64v8/python:3.11"
 
         docker_client = docker.from_env()
         docker_client.containers.run(
