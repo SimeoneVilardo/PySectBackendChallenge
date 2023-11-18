@@ -93,4 +93,5 @@ COPY --chown=${USER}:${USER} . /code
 USER $USER
 
 # Expose django static files
+VOLUME ["/code/server/apps/core/storage/"]
 VOLUME ["/var/www/django/static/"]

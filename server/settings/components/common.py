@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'django_jsonform',
-    'django_celery_results',
     'server.apps.core',
 ]
 
@@ -150,10 +149,3 @@ BASE_SRC_PATH = 'server/apps/core/storage/uploads'
 
 # settings.py
 # ...
-
-# Celery Configuration
-CELERY_TIMEZONE = "Europe/Rome"
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_CACHE_BACKEND = 'django-cache'

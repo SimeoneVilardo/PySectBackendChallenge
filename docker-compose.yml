@@ -9,14 +9,6 @@
 
 version: "3.6"
 services:
-  rabbit:
-    image: rabbitmq
-    container_name: rabbit
-    restart: unless-stopped
-    ports:
-      - "5672:5672"
-    networks:
-      - webnet
 
   db:
     image: "postgres:13.10-alpine"
@@ -56,11 +48,11 @@ services:
 
     volumes:
       - django-static:/var/www/django/static
-      # We only mount source code in development:
+      - storage:/code/server/apps/core/storage
+      # We should only mount source code in development:
       - .:/code
     depends_on:
       - db
-      - rabbit
     networks:
       - webnet
     extra_hosts:
@@ -84,5 +76,6 @@ networks:
 volumes:
   pgdata:
   django-static:
+  storage:
 
 
