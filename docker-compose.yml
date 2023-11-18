@@ -31,7 +31,7 @@ services:
     ports:
       # We only bind ports directly in development:
       - "9000:8000"
-    platform: linux/x86_64
+    platform: linux/arm64/v8
     build:
       target: builder_image
       context: .
