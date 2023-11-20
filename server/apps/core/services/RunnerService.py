@@ -1,6 +1,10 @@
 from dataclasses import dataclass
-import subprocess
 import os
+import boto3
+import zipfile
+import io
+
+from server.apps.core.models import Challenge, ChallengeSubmission, ChallengeInput
 
 @dataclass
 class RunnerOutput:
@@ -8,37 +12,37 @@ class RunnerOutput:
     error: list
 
 class RunnerService:
-    env = os.environ.copy()
-    env["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
-
     @classmethod
-    def read_input(cls, input_path):
-        try:
-            with open(input_path, 'r') as file:
-                lines = file.readlines()
-                lines = [line.rstrip('\n') for line in lines]
-                return lines
-        except FileNotFoundError:
-            print(f"File {input_path} not found")
-            return []
-        
+    def create_lambda_function(cls, function_name, zip_file, region="eu-north-1", role_name="PySectRunner", handler="src.lambda_handler", runtime="python3.11", memory_size=128, timeout=30):
+        iam_client = boto3.client('iam')
+        role = iam_client.get_role(RoleName=role_name)
+        lambda_client = boto3.client('lambda', region_name=region)
+        response = lambda_client.create_function(
+            FunctionName=function_name,
+            Runtime=runtime,
+            Role=role['Role']['Arn'],
+            Handler=handler,
+            Code={
+                'ZipFile': zip_file.read(),
+            },
+            MemorySize=memory_size,
+            Timeout=timeout,
+        )
+        return response
+    
     @classmethod
-    def read_output(cls, output_path):
-        try:
-            with open(output_path, 'r') as file:
-                lines = file.readlines()
-                lines = [line.rstrip('\n') for line in lines]
-                return lines
-        except FileNotFoundError:
-            print(f"File {output_path} not found")
-            return []
-
-    @classmethod
-    def execute_with_input(cls, source_file: str, input_array = list()) -> RunnerOutput:
-        process = subprocess.Popen(['python', source_file], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=cls.env)
-        input_string = '\n'.join(input_array)
-        output, error = process.communicate(input=input_string)
-        output = list(filter(None, output.split('\n')))
-        error = list(filter(None, error.split('\n')))
-        result = RunnerOutput(output, error)
-        return result
+    def create_zip_file(cls, challenge_input: ChallengeInput, challenge_submission: ChallengeSubmission):
+        challenge: Challenge = challenge_submission.challenge
+        with open('src.py.template') as f:
+            src_template = f.read()
+        with open(challenge_submission.src) as f:
+            src = f.read()
+        with open(challenge_input.input) as f:
+            input = f.read()
+        src_wrapped = src_template.replace('{{code}}', src)
+        zip_contents = io.BytesIO()
+        with zipfile.ZipFile(f"{challenge.name}.zip", 'w') as zip_file:
+            zip_file.writestr('src.py', src_wrapped)
+            zip_file.writestr('input.txt', input)
+        zip_contents.seek(0)
+        return zip_contents
