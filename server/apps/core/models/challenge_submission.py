@@ -21,14 +21,14 @@ class ChallengeSubmission(models.Model):
     )
     src = models.CharField(max_length=255, blank=False, null=False)
     output = ArrayField(models.CharField(max_length=255, blank=True, null=True), default=list)
-    error = ArrayField(models.CharField(max_length=255, blank=True, null=True), default=list)
+    error = models.TextField(null=True, blank=True)
     status = models.CharField(
         max_length=100,
         choices=ChallengeSubmissionStatusChoices.choices,
         default=ChallengeSubmissionStatusChoices.READY,
     )
-    memory = models.IntegerField(null=True,blank=True)
-    time = models.IntegerField(null=True,blank=True)
+    memory = models.IntegerField(null=True, blank=True)
+    time = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

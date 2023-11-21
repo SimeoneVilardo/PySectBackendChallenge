@@ -7,8 +7,8 @@ class Challenge(models.Model):
     reward = models.IntegerField()
     input_sample = ArrayField(models.TextField())
     output_sample = ArrayField(models.TextField())
-    memory = models.IntegerField()
-    time = models.IntegerField()
+    memory_limit = models.IntegerField()
+    time_limit = models.IntegerField()
 
     def __str__(self):
         return self.name
