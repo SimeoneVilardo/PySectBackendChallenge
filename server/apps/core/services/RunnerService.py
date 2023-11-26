@@ -5,8 +5,10 @@ import zipfile
 import io
 import os
 import time
+import shutil
+import uuid;
 
-from server.apps.core.models import Challenge, ChallengeSubmission, ChallengeInput
+from server.apps.core.models import Challenge, ChallengeSubmission
 
 @dataclass
 class RunnerOutput:
@@ -22,6 +24,21 @@ class RunnerService:
     lambda_client = boto3.client('lambda', region_name="eu-north-1")
 
     @classmethod
+    def create_random_id(cls) -> str:
+        uuid_without_dash = str(uuid.uuid4()).replace('-', '')
+        return uuid_without_dash
+
+    @classmethod
+    def add_script_to_zip(cls, zip_filename, src_file_str, input_str):
+        with zipfile.ZipFile(zip_filename, 'a') as existing_zip:
+            zip_info_src = zipfile.ZipInfo('src.py')
+            zip_info_src.external_attr = 0o777 << 16  # Set file permission to "777"
+            zip_info_input = zipfile.ZipInfo('input.txt')
+            zip_info_input.external_attr = 0o777 << 16  # Set file permission to "777"
+            existing_zip.writestr(zip_info_src, src_file_str)
+            existing_zip.writestr(zip_info_input, input_str)
+
+    @classmethod
     def create_lambda_function(cls, function_name, zip_file, role_name="PySectRunner", handler="src.lambda_handler", runtime="python3.11", memory_size=128, timeout=30):
         role = cls.iam_client.get_role(RoleName=role_name)
         response = cls.lambda_client.create_function(
@@ -34,6 +51,11 @@ class RunnerService:
             },
             MemorySize=memory_size,
             Timeout=timeout,
+            Environment={
+                'Variables': {
+                    'PYSECT_BACKEND_API_KEY': 'xxx',
+                }
+            },
         )
         for i in range(30):
             response = cls.lambda_client.get_function(FunctionName=function_name)
@@ -82,10 +104,15 @@ class RunnerService:
         return runner_output
     
     @classmethod
-    def create_zip_file(cls, challenge_input: ChallengeInput, challenge_submission: ChallengeSubmission) -> io.BytesIO:
+    def create_zip_file(cls, challenge_submission: ChallengeSubmission) -> io.BytesIO:
         template_path = os.path.join("server", "apps", "core", cls.runner_template_path)
         src_path = os.path.join("server", "apps", "core", "storage", "uploads", challenge_submission.src)
-        input_path = os.path.join("server", "apps", "core", "storage", "inputs", challenge_input.input)
+        input_path = os.path.join("server", "apps", "core", "storage", "inputs", challenge_submission.challenge.input_path)
+        zip_package_template_path = os.path.join("server", "apps", "core", "runner-template", "package.zip.template")
+        zip_package_path = os.path.join("server", "apps", "core", "runner-template", f"{cls.create_random_id()}.zip")
+
+        shutil.copy(zip_package_template_path, zip_package_path)
+
         with open(template_path) as f:
             src_template = f.read()
         with open(src_path) as f:
@@ -93,13 +120,6 @@ class RunnerService:
         with open(input_path) as f:
             input = f.read()
         src_wrapped = src_template.replace('{{code}}', src)
-        zip_contents = io.BytesIO()
-        with zipfile.ZipFile(zip_contents, 'w') as zip_file:
-            zip_info_src = zipfile.ZipInfo('src.py')
-            zip_info_src.external_attr = 0o777 << 16  # Set file permission to "777"
-            zip_file.writestr(zip_info_src, src_wrapped)
-            zip_info_input = zipfile.ZipInfo('input.txt')
-            zip_info_input.external_attr = 0o777 << 16  # Set file permission to "777"
-            zip_file.writestr(zip_info_input, input)
-        zip_contents.seek(0)
-        return zip_contents
+
+        cls.add_script_to_zip(zip_package_path, src_wrapped, input)
+        return open(zip_package_path, 'rb')

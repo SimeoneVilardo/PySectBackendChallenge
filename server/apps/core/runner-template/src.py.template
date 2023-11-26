@@ -1,11 +1,17 @@
 import sys
 from io import StringIO
+import requests
 
 lines = []
 with open('input.txt', 'r') as file:
     lines = [line.strip() for line in file.readlines()]
 def input(prompt=""):
     return lines.pop(0)
+
+def notify_result(result):
+    url = 'https://example.com/api/resource'
+    data = {'key': 'new_value'}
+    response = requests.patch(url, json=data, headers=headers)
 
 
 {{code}}

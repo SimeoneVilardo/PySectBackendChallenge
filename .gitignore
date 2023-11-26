@@ -30,6 +30,7 @@ docker/.elasticbeanstalk/**
 server/settings/environments/local.py
 !local_fixtures/
 !local_fixtures/**
+runner-template/packages
 
 # Translations
 *.mo

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Challenge, ChallengeInput, ChallengeSubmission
+from .models import User, Challenge, ChallengeSubmission
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
@@ -9,11 +9,6 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(Challenge)
 class ChallengeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'reward')
-    search_fields = ('name',)
-
-@admin.register(ChallengeInput)
-class ChallengeInputAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'challenge')
     search_fields = ('name',)
 
 @admin.register(ChallengeSubmission)

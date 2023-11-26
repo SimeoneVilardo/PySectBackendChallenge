@@ -5,10 +5,12 @@ class Challenge(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     reward = models.IntegerField()
-    input_sample = ArrayField(models.TextField())
-    output_sample = ArrayField(models.TextField())
+    input_sample = ArrayField(models.JSONField())
+    output_sample = ArrayField(models.JSONField())
     memory_limit = models.IntegerField()
     time_limit = models.IntegerField()
+    input_path = models.CharField(max_length=255)
+    output_path = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name

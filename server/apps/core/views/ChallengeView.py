@@ -4,13 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
-from server.apps.core.models import Challenge, ChallengeInput, ChallengeSubmission
-
-class ChallengeInputSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ChallengeInput
-        fields = '__all__'
-
+from server.apps.core.models import Challenge, ChallengeSubmission
 
 class ChallengeSubmissionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,12 +13,11 @@ class ChallengeSubmissionSerializer(serializers.ModelSerializer):
 
 
 class ChallengeSerializer(serializers.ModelSerializer):
-    challenge_inputs = ChallengeInputSerializer(many=True, read_only=True)
     challenge_submissions = ChallengeSubmissionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Challenge
-        fields = '__all__'
+        exclude = ['input_path', 'output_path'] 
 
 class ChallengeView(GenericAPIView, ListModelMixin, RetrieveModelMixin):
     queryset = Challenge.objects.all()

@@ -25,7 +25,7 @@ class ChallengeSubmission(models.Model):
     status = models.CharField(
         max_length=100,
         choices=ChallengeSubmissionStatusChoices.choices,
-        default=ChallengeSubmissionStatusChoices.READY,
+        default=ChallengeSubmissionStatusChoices.NOT_READY,
     )
     memory = models.IntegerField(null=True, blank=True)
     time = models.IntegerField(null=True, blank=True)
