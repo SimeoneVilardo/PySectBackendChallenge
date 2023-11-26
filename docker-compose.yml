@@ -25,7 +25,7 @@ services:
       - ./docker/config/.env
 
   web:
-    image: "pysect-backend-backend:dev"
+    image: "pysect-backend:dev"
     container_name: pysect-backend-web
     privileged: true
     ports:
@@ -42,8 +42,8 @@ services:
         USER_ID: ${UID:-1000}
         USER_GID: ${GID:-1000}
       cache_from:
-        - "pysect-backend-backend:dev"
-        - "pysect-backend-backend:latest"
+        - "pysect-backend:dev"
+        - "pysect-backend:latest"
         - "*"
 
     volumes:

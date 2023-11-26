@@ -17,3 +17,4 @@ split-settings==1.0.0
 sqlparse==0.4.4
 typing_extensions==4.8.0
 boto3==1.29.3
+black==23.11.0

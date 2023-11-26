@@ -19,7 +19,7 @@
 !docs/
 !docs/**
 !pytest.ini
-server/apps/core/storage
+server/storage
 docker/config/.env
 docker/config/.env.local.shell
 docs/_build/

@@ -6,24 +6,6 @@ FROM python:3.11-bullseye AS builder_image
 LABEL maintainer="simeone.vilardo@gmail.com"
 LABEL vendor="PySect"
 
-# Install Docker
-RUN apt-get update && \
-    apt-get install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release && \
-    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
-    apt-get update && \
-    apt-get install -y docker-ce docker-ce-cli containerd.io && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install Docker Compose
-RUN curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
-    chmod +x /usr/local/bin/docker-compose
-
 ARG DJANGO_ENV
 
 # user args
@@ -75,7 +57,7 @@ ENV DJANGO_ENV=${DJANGO_ENV} \
 
 COPY --from=builder_image /opt/django /opt/django
 
-ENV PYTHONPATH=/opt/django/pypkgs/lib/python3.10/site-packages:/code/ \
+ENV PYTHONPATH=/opt/django/pypkgs/lib/python3.11/site-packages:/code/ \
   PATH=$PATH:/opt/django/pypkgs/bin/
 
 WORKDIR /code
@@ -93,5 +75,5 @@ COPY --chown=${USER}:${USER} . /code
 USER $USER
 
 # Expose django static files
-VOLUME ["/code/server/apps/core/storage/"]
+VOLUME ["/code/storage/"]
 VOLUME ["/var/www/django/static/"]
