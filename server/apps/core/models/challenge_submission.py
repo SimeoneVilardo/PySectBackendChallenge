@@ -1,4 +1,4 @@
-from django.db import models
+from django.contrib.auth.models import User
 from django.db import models, IntegrityError
 from django.core.exceptions import ValidationError
 from django.contrib.postgres.fields import ArrayField
@@ -8,20 +8,20 @@ from server.apps.core.choices import ChallengeSubmissionStatusChoices
 
 class ChallengeSubmission(models.Model):
     challenge = models.ForeignKey(
-        'Challenge',
-        related_name='challenge_submissions',
+        "Challenge",
+        related_name="challenge_submissions",
         on_delete=models.CASCADE,
         db_index=True,
     )
     user = models.ForeignKey(
-        'User',
-        related_name='users',
+        User,
+        related_name="challenge_submissions",
         on_delete=models.CASCADE,
         db_index=True,
     )
-    src = models.CharField(max_length=255, blank=False, null=False)
-    output = ArrayField(models.CharField(max_length=255, blank=True, null=True), default=list)
-    error = models.TextField(null=True, blank=True)
+    src_path = models.CharField(max_length=255, blank=False, null=False)
+    output_path = models.CharField(max_length=255, blank=True, null=True)
+    error_path = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(
         max_length=100,
         choices=ChallengeSubmissionStatusChoices.choices,
@@ -29,12 +29,10 @@ class ChallengeSubmission(models.Model):
     )
     memory = models.IntegerField(null=True, blank=True)
     time = models.IntegerField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    update_date = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.src
-    
-    '''
+    """
     def clean(self):
         # Check if the status is 'SUCCESS' before enforcing the unique constraint
         if self.status == ChallengeSubmissionStatusChoices.SUCCESS:
@@ -50,19 +48,19 @@ class ChallengeSubmission(models.Model):
                 )
 
         super().clean()
-    '''
-    
+    """
+
     class Meta:
-        db_table = 'challenge_submissions'
+        db_table = "challenge_submissions"
 
-        verbose_name = 'python challenge submission'
-        verbose_name_plural = 'python challenge submissions'
+        verbose_name = "python challenge submission"
+        verbose_name_plural = "python challenge submissions"
 
-        '''
+        """
         constraints = [
             models.UniqueConstraint(
                 fields=['challenge', 'user', 'status'],
                 name='unique_challenge_user_success'
             )
         ]
-        '''
+        """

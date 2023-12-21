@@ -7,7 +7,7 @@
 # Should be used together with `docker/docker-compose.prod.yml`
 # in production.
 
-version: "3.6"
+version: "3.9"
 services:
 
   db:
@@ -48,7 +48,6 @@ services:
 
     volumes:
       - django-static:/var/www/django/static
-      - storage:/code/server/apps/core/storage
       # We should only mount source code in development:
       - .:/code
     depends_on:
@@ -76,6 +75,3 @@ networks:
 volumes:
   pgdata:
   django-static:
-  storage:
-
-

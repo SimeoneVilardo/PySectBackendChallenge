@@ -19,8 +19,8 @@ from django.urls import include, path
 from server.apps.core.urls import urlpatterns as core_urls
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include(core_urls)),
+    path("admin/", admin.site.urls),
+    path("api/", include(core_urls)),
 ]
 
 admin.site.site_header = "PySect Admin"
