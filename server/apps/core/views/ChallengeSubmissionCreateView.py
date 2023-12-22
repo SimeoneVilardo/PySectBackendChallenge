@@ -7,6 +7,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from server.apps.core.models import Challenge, ChallengeSubmission
 
@@ -34,7 +35,7 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
         if not file_obj:
             return Response({"error": "No file received"}, status=status.HTTP_400_BAD_REQUEST)
 
-        challenge = Challenge.objects.get(id=kwargs["id"])
+        challenge = get_object_or_404(Challenge, id=kwargs["id"])
         user = User.objects.get(id=user_id)
         challenge_submission = self.create_challenge_submission(challenge, user, src_path)
         return Response(status=status.HTTP_201_CREATED)
