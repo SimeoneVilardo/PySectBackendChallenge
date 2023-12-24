@@ -9,7 +9,6 @@ from django.contrib.auth.models import User
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.models import ChallengeSubmission, Challenge
 from server.apps.core.serializers import ChallengeSubmissionSerializer
-from server.apps.core.services.AWSService import AWSService
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
 
 

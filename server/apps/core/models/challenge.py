@@ -10,8 +10,8 @@ class Challenge(models.Model):
     output_sample = models.TextField()
     memory_limit = models.IntegerField()
     time_limit = models.IntegerField()
-    input_path = models.CharField(max_length=255)
-    output_path = models.CharField(max_length=255)
+    input = models.TextField()
+    output = models.TextField()
 
     def __str__(self):
         return self.name

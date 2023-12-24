@@ -138,8 +138,6 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser",),
 }
 
-AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
-AWS_REPOSITORY_URI = config("AWS_REPOSITORY_URI")
 AWS_LAMBDA_ROLE = config("AWS_LAMBDA_ROLE")
 
 # settings.py

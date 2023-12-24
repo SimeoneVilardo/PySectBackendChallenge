@@ -11,18 +11,12 @@ from django.contrib.auth.models import User
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.models import Challenge, ChallengeSubmission
 from server.apps.core.serializers import ChallengeSubmissionSerializer
-from server.apps.core.services.AWSService import AWSService
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
-from server.apps.core.services.ChallengeSubmissionSourceSaver import (
-    BucketChallengeSubmissionSourceSaver,
-    ChallengeSubmissionSourceSaver,
-)
 
 
 class ChallengeSubmissionCreateView(generics.CreateAPIView):
     queryset = ChallengeSubmission.objects.all()
     parser_classes = (MultiPartParser,)
-    challenge_submission_source_saver: ChallengeSubmissionSourceSaver = BucketChallengeSubmissionSourceSaver()
 
     def post(self, request, *args, **kwargs):
         user_id = 1  # dummy user id
@@ -48,22 +42,21 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
     def is_valid_python_file(self, file_obj: File):
         if not file_obj:
             raise serializers.ValidationError({"error": "No file received"})
+        if file_obj.size == 0:
+            raise serializers.ValidationError({"error": "Empty file"})
         if file_obj.size > 0.5 * 1024 * 1024:
             raise serializers.ValidationError({"error": "File size is too large (max 512 KB)"})
         if not file_obj.name.endswith(".py"):
             raise serializers.ValidationError({"error": "The file is not a Python file"})
         try:
             ast.parse(file_obj.read().decode())
+            file_obj.seek(0)
         except SyntaxError:
             raise serializers.ValidationError({"error": "The file does not contain valid Python code"})
         return True
 
     def create_challenge_submission(self, challenge: Challenge, user: User, file_obj: File) -> ChallengeSubmission:
-        try:
-            src_path = self.challenge_submission_source_saver.save(file_obj)
-        except Exception as e:
-            raise serializers.ValidationError({"error": "Could not save the file"})
-        challenge_submission = {"challenge": challenge.id, "user": user.id, "src_path": src_path}
+        challenge_submission = {"challenge": challenge.id, "user": user.id, "src_data": file_obj.read().decode("utf-8")}
         serializer = ChallengeSubmissionSerializer(data=challenge_submission)
         serializer.is_valid(raise_exception=True)
         try:
@@ -73,12 +66,14 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
         return challenge_submission
 
     def create_zip_file(self, challenge: Challenge, challenge_submission: ChallengeSubmission):
-        src_file = AWSService.download_src(challenge_submission).decode("utf-8")
+        if challenge_submission.src_data is None:
+            raise serializers.ValidationError({"error": "No source code found"})
+        src_data = challenge_submission.src_data
         with open("server/apps/core/lambda/lambda_function.py", "r") as file:
             template = file.read()
-        src_file = template.replace("###SRC###", src_file)
-        input_file = AWSService.download_input(challenge)
-        zip_file = ChallengeSubmissionRunner.create_zip(input_file, src_file)
+        src_data = template.replace("###SRC###", src_data)
+        input_file = challenge.input
+        zip_file = ChallengeSubmissionRunner.create_zip(input_file, src_data)
         return zip_file
 
     def update_challenge_submission(self, challenge_submission: ChallengeSubmission, function_name: str):

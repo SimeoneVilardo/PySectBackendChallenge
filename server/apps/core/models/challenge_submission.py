@@ -20,7 +20,7 @@ class ChallengeSubmission(models.Model):
         db_index=True,
     )
     lambda_name = models.CharField(max_length=255, blank=True, null=True)
-    src_path = models.CharField(max_length=255, blank=False, null=False)
+    src_data = models.TextField(blank=True, null=True)
     output = models.TextField(blank=True, null=True)
     error = models.TextField(blank=True, null=True)
     status = models.CharField(

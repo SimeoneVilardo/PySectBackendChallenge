@@ -9,7 +9,6 @@ from django.contrib.auth.models import User
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.models import ChallengeSubmission, Challenge
 from server.apps.core.serializers import ChallengeSubmissionResultSerializer, ChallengeSubmissionSerializer
-from server.apps.core.services.AWSService import AWSService
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
 
 
@@ -38,9 +37,8 @@ class ChallengeSubmissionResultView(UpdateAPIView):
         challenge_submission: ChallengeSubmission = self.get_object()
 
         challenge: Challenge = challenge_submission.challenge
-        output_file = AWSService.download_output(challenge)
-        output = output_file.decode("utf-8").strip()
-        challenge_submission.output = validated_data["output"].strip()
+        output = challenge.output.strip().replace("\r\n", "\n").replace("\r", "\n")
+        challenge_submission.output = validated_data["output"].strip().replace("\r\n", "\n").replace("\r", "\n")
         challenge_submission.error = validated_data["error"]
         challenge_submission.status = (
             ChallengeSubmissionStatusChoices.SUCCESS

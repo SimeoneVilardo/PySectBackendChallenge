@@ -8,4 +8,4 @@ class ChallengeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Challenge
-        exclude = ["input_path", "output_path"]
+        exclude = ["input", "output"]
