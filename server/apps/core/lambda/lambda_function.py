@@ -68,6 +68,6 @@ def lambda_handler(event, context):
             error = str(e)
             break
 
-    output = sys.stdout.getvalue().encode("utf-8")
+    output = sys.stdout.getvalue()
     sys.stdout = original_stdout
     notify_result(challenge_id, output, error)
