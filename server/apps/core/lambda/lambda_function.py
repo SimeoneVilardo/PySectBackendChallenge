@@ -25,7 +25,7 @@ def make_patch_request(url, data):
     path = "/" + "/".join(parts[3:])
     connection = http.client.HTTPConnection(host)
     headers = {"Content-type": "application/json"}
-    connection.request("PATCH", path, body=data, headers=headers)
+    connection.request("PATCH", path, body=json.dumps(data), headers=headers)
     response = connection.getresponse()
     # response_data = response.read().decode("utf-8")
     # print(response_data)
