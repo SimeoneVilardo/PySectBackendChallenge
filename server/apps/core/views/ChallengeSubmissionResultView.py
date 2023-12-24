@@ -8,32 +8,45 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.models import ChallengeSubmission, Challenge
-from server.apps.core.serializers import ChallengeSubmissionSerializer
+from server.apps.core.serializers import ChallengeSubmissionResultSerializer, ChallengeSubmissionSerializer
 from server.apps.core.services.AWSService import AWSService
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
 
 
-class ChallengeSubmissionRunView(UpdateAPIView):
+class ChallengeSubmissionResultView(UpdateAPIView):
     queryset = ChallengeSubmission.objects.all()
+    serializer_class = ChallengeSubmissionResultSerializer
     lookup_field = "id"
-    serializer_class = ChallengeSubmissionSerializer
 
     def get_object(self):
         try:
             challenge_submission = ChallengeSubmission.objects.select_related("challenge").get(id=self.kwargs["id"])
         except ChallengeSubmission.DoesNotExist:
             raise Http404()
-        if challenge_submission.status != ChallengeSubmissionStatusChoices.READY:
-            raise serializers.ValidationError({"error": "Challenge is not in READY state"})
+        if challenge_submission.status != ChallengeSubmissionStatusChoices.RUNNING:
+            raise serializers.ValidationError({"error": "Challenge is not in RUNNING state"})
         return challenge_submission
 
     def partial_update(self, request, *args, **kwargs):
         user_id = 1  # dummy user id
         user = User.objects.get(id=user_id)
-        challenge_submission: ChallengeSubmission = self.get_object()
-        challenge: Challenge = challenge_submission.challenge
 
-        response = ChallengeSubmissionRunner.invoke_lambda_function(challenge_submission.lambda_name)
-        challenge_submission.status = ChallengeSubmissionStatusChoices.RUNNING
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
+
+        challenge_submission: ChallengeSubmission = self.get_object()
+
+        challenge: Challenge = challenge_submission.challenge
+        output_file = AWSService.download_output(challenge)
+        output = output_file.decode("utf-8").strip()
+        challenge_submission.output = validated_data["output"].strip()
+        challenge_submission.error = validated_data["error"]
+        challenge_submission.status = (
+            ChallengeSubmissionStatusChoices.SUCCESS
+            if output == challenge_submission.output
+            else ChallengeSubmissionStatusChoices.FAILURE
+        )
         challenge_submission.save()
-        return Response(status=status.HTTP_202_ACCEPTED)
+
+        return Response(status=status.HTTP_200_OK)

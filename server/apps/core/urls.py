@@ -1,4 +1,5 @@
 from django.urls import path
+from server.apps.core.views.ChallengeSubmissionResultView import ChallengeSubmissionResultView
 from server.apps.core.views.DummyView import DummyView
 from server.apps.core.views.ChallengeSubmissionRunView import ChallengeSubmissionRunView
 from server.apps.core.views.ChallengeView import ChallengeView
@@ -15,5 +16,10 @@ urlpatterns = [
     ),
     path(
         "challenge-submission/<int:id>/run/", ChallengeSubmissionRunView.as_view(), name="challenge_submission_run_api"
+    ),
+    path(
+        "challenge-submission/<int:id>/result/",
+        ChallengeSubmissionResultView.as_view(),
+        name="challenge_submission_result_api",
     ),
 ]

@@ -10,5 +10,5 @@ class ChallengeAdmin(admin.ModelAdmin):
 
 @admin.register(ChallengeSubmission)
 class ChallengeSubmissionAdmin(admin.ModelAdmin):
-    list_display = ("id", "challenge", "src_path", "output_path", "error_path")
+    list_display = ("id", "challenge", "src_path")
     search_fields = ("challenge",)

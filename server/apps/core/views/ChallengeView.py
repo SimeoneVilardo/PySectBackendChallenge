@@ -5,20 +5,7 @@ from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from server.apps.core.models import Challenge, ChallengeSubmission
-
-
-class ChallengeSubmissionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ChallengeSubmission
-        fields = "__all__"
-
-
-class ChallengeSerializer(serializers.ModelSerializer):
-    challenge_submissions = ChallengeSubmissionSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Challenge
-        exclude = ["input_path", "output_path"]
+from server.apps.core.serializers import ChallengeSerializer
 
 
 class ChallengeView(GenericAPIView, ListModelMixin, RetrieveModelMixin):

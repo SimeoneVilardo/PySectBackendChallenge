@@ -19,9 +19,10 @@ class ChallengeSubmission(models.Model):
         on_delete=models.CASCADE,
         db_index=True,
     )
+    lambda_name = models.CharField(max_length=255, blank=True, null=True)
     src_path = models.CharField(max_length=255, blank=False, null=False)
-    output_path = models.CharField(max_length=255, blank=True, null=True)
-    error_path = models.CharField(max_length=255, blank=True, null=True)
+    output = models.TextField(blank=True, null=True)
+    error = models.TextField(blank=True, null=True)
     status = models.CharField(
         max_length=100,
         choices=ChallengeSubmissionStatusChoices.choices,
