@@ -41,7 +41,11 @@ class ChallengeSubmissionResultView(UpdateAPIView):
         validated_data = serializer.validated_data
 
         challenge_submission: ChallengeSubmission = self.get_object()
-        challenge_submission.output = validated_data["output"].strip().replace("\r\n", "\n").replace("\r", "\n")
+        challenge_submission.output = (
+            validated_data["output"].strip().replace("\r\n", "\n").replace("\r", "\n")
+            if validated_data["output"]
+            else None
+        )
         challenge_submission.error = validated_data["error"]
         challenge_submission.save()
 
