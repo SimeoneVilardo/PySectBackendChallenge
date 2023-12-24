@@ -2,7 +2,7 @@ import builtins
 import sys
 import json
 from io import StringIO
-import urllib
+import urllib.request
 
 with open("input.json") as input_file:
     parsed_input_list = json.load(input_file)
