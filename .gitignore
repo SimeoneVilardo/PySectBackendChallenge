@@ -13,6 +13,7 @@
 !deploy/**
 !.gitlab-ci.yml
 !docker-compose.yml
+!docker-compose.prod.yml
 !manage.py
 !docker
 !docker/**
