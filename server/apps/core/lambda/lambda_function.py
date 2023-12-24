@@ -70,5 +70,7 @@ def lambda_handler(event, context):
             break
 
     output = sys.stdout.getvalue()
+    if not output:
+        output = None
     sys.stdout = original_stdout
     notify_result(challenge_id, output, error)
