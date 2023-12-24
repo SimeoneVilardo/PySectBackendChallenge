@@ -35,11 +35,13 @@ class ChallengeSubmissionResultView(UpdateAPIView):
         validated_data = serializer.validated_data
 
         challenge_submission: ChallengeSubmission = self.get_object()
-
-        challenge: Challenge = challenge_submission.challenge
-        output = challenge.output.strip().replace("\r\n", "\n").replace("\r", "\n")
         challenge_submission.output = validated_data["output"].strip().replace("\r\n", "\n").replace("\r", "\n")
         challenge_submission.error = validated_data["error"]
+        challenge_submission.save()
+
+        # TODO: move this to an async task
+        challenge: Challenge = challenge_submission.challenge
+        output = challenge.output.strip().replace("\r\n", "\n").replace("\r", "\n")
         challenge_submission.status = (
             ChallengeSubmissionStatusChoices.SUCCESS
             if output == challenge_submission.output
