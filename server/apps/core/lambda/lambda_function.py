@@ -3,6 +3,7 @@ import sys
 import json
 from io import StringIO
 import urllib.request
+import traceback
 
 with open("input.json") as input_file:
     parsed_input_list = json.load(input_file)
@@ -42,7 +43,7 @@ def make_patch_request(url, data):
         return None
 
 
-def notify_result(challenge_id, output, error):
+def notify_result(challenge_id, output=None, error=None):
     url = f"https://api.pysect.letz.dev/api/challenge-submission/{challenge_id}/result/"
     data = {"output": output, "error": error}
     make_patch_request(url, data)
@@ -64,8 +65,8 @@ def lambda_handler(event, context):
             # start custom code
             main()
             # end custom code
-        except Exception as e:
-            error = str(e)
+        except:
+            error = traceback.format_exc()
             break
 
     output = sys.stdout.getvalue()
