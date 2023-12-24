@@ -10,6 +10,7 @@ from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.models import ChallengeSubmission, Challenge
 from server.apps.core.serializers import ChallengeSubmissionResultSerializer, ChallengeSubmissionSerializer
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
+from server.apps.core.tasks.challenge_submission import check_submission_result
 
 
 class ChallengeSubmissionResultView(UpdateAPIView):
@@ -19,7 +20,7 @@ class ChallengeSubmissionResultView(UpdateAPIView):
 
     def get_object(self):
         try:
-            challenge_submission = ChallengeSubmission.objects.select_related("challenge").get(id=self.kwargs["id"])
+            challenge_submission = ChallengeSubmission.objects.get(id=self.kwargs["id"])
         except ChallengeSubmission.DoesNotExist:
             raise Http404()
         if challenge_submission.status != ChallengeSubmissionStatusChoices.RUNNING:
@@ -39,14 +40,5 @@ class ChallengeSubmissionResultView(UpdateAPIView):
         challenge_submission.error = validated_data["error"]
         challenge_submission.save()
 
-        # TODO: move this to an async task
-        challenge: Challenge = challenge_submission.challenge
-        output = challenge.output.strip().replace("\r\n", "\n").replace("\r", "\n")
-        challenge_submission.status = (
-            ChallengeSubmissionStatusChoices.SUCCESS
-            if output == challenge_submission.output
-            else ChallengeSubmissionStatusChoices.FAILURE
-        )
-        challenge_submission.save()
-
+        check_submission_result.delay(challenge_submission.id)
         return Response(status=status.HTTP_200_OK)

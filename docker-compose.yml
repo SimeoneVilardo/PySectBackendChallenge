@@ -10,6 +10,12 @@
 version: "3.9"
 services:
 
+  redis:
+    image: redis:latest
+    container_name: pysect-backend-redis
+    networks:
+      - webnet
+
   db:
     image: "postgres:13.10-alpine"
     container_name: pysect-backend-db
@@ -27,11 +33,10 @@ services:
   web:
     image: "pysect-backend:dev"
     container_name: pysect-backend-web
-    privileged: true
     ports:
       # We only bind ports directly in development:
       - "9000:8000"
-    platform: linux/amd64
+    #platform: linux/amd64
     build:
       target: builder_image
       context: .
@@ -52,6 +57,7 @@ services:
       - .:/code
     depends_on:
       - db
+      - redis
     networks:
       - webnet
     extra_hosts:
@@ -61,12 +67,6 @@ services:
     environment:
       DJANGO_DATABASE_HOST: db
     command: ./docker/django/local_run.sh
-
-    # This task is an example of how to extend existing ones:
-    #   some_worker:
-    #     <<: *web
-    #     command: python manage.py worker_process
-
 networks:
   # Network for your internals, use it by default:
   webnet:

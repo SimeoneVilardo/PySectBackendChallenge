@@ -12,6 +12,7 @@ from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.models import Challenge, ChallengeSubmission
 from server.apps.core.serializers import ChallengeSubmissionSerializer
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
+from server.apps.core.tasks.challenge_submission import create_lambda_function
 
 
 class ChallengeSubmissionCreateView(generics.CreateAPIView):
@@ -29,14 +30,7 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
 
         challenge_submission: ChallengeSubmission = self.create_challenge_submission(challenge, user, file_obj)
 
-        # TODO: move this to an async task
-
-        zip_file = self.create_zip_file(challenge, challenge_submission)
-        lambda_response = ChallengeSubmissionRunner.create_lambda_function(
-            f"submission_{challenge_submission.id}", zip_file
-        )
-
-        self.update_challenge_submission(challenge_submission, lambda_response["FunctionName"])
+        create_lambda_function.delay(challenge_submission.id)
         return Response(status=status.HTTP_201_CREATED)
 
     def is_valid_python_file(self, file_obj: File):
@@ -64,17 +58,6 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
         except IntegrityError as e:
             raise serializers.ValidationError({"error": "Database integrity error"})
         return challenge_submission
-
-    def create_zip_file(self, challenge: Challenge, challenge_submission: ChallengeSubmission):
-        if challenge_submission.src_data is None:
-            raise serializers.ValidationError({"error": "No source code found"})
-        src_data = challenge_submission.src_data
-        with open("server/apps/core/lambda/lambda_function.py", "r") as file:
-            template = file.read()
-        src_data = template.replace("###SRC###", src_data)
-        input_file = challenge.input
-        zip_file = ChallengeSubmissionRunner.create_zip(input_file, src_data)
-        return zip_file
 
     def update_challenge_submission(self, challenge_submission: ChallengeSubmission, function_name: str):
         challenge_submission.lambda_name = function_name
