@@ -2,7 +2,7 @@ import builtins
 import sys
 import json
 from io import StringIO
-import http.client
+import urllib
 
 with open("input.json") as input_file:
     parsed_input_list = json.load(input_file)
@@ -20,20 +20,30 @@ builtins.input = fake_input
 
 
 def make_patch_request(url, data):
-    parts = url.split("/")
-    host = parts[2]
-    path = "/" + "/".join(parts[3:])
-    connection = http.client.HTTPConnection(host)
-    headers = {"Content-type": "application/json"}
-    connection.request("PATCH", path, body=json.dumps(data), headers=headers)
-    response = connection.getresponse()
-    # response_data = response.read().decode("utf-8")
-    # print(response_data)
-    connection.close()
+    try:
+        parts = url.split("/")
+        host = parts[2]
+        json_data = json.dumps(data).encode("utf-8")
+        headers = {
+            "Content-type": "application/json",
+            "Host": host,
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Connection": "keep-alive",
+            "User-Agent": "pysect-lambda",
+        }
+        request = urllib.request.Request(url, data=json_data, method="PATCH", headers=headers)
+        with urllib.request.urlopen(request) as response:
+            status_code = response.getcode()
+            return status_code
+    except urllib.error.HTTPError as e:
+        return e.code
+    except urllib.error.URLError as e:
+        return None
 
 
 def notify_result(challenge_id, output, error):
-    url = f"http://37.182.11.36/api/challenge-submission/{challenge_id}/result/"
+    url = f"https://api.pysect.letz.dev/api/challenge-submission/{challenge_id}/result/"
     data = {"output": output, "error": error}
     make_patch_request(url, data)
 
