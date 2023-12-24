@@ -31,8 +31,13 @@ class ChallengeSubmissionResultView(UpdateAPIView):
         user_id = 1  # dummy user id
         user = User.objects.get(id=user_id)
 
+        print("request.data", request.data)
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except serializers.ValidationError as e:
+            print("e.detail", e.detail)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         validated_data = serializer.validated_data
 
         challenge_submission: ChallengeSubmission = self.get_object()
