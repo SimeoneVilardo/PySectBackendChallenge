@@ -32,17 +32,17 @@ def make_patch_request(url, data):
     connection.close()
 
 
-def notify_result(output, error):
-    url = "http://example.com/resource/123"
+def notify_result(challenge_id, output, error):
+    url = f"http://37.182.11.36/api/challenge-submission/{challenge_id}/result/"
     data = {"output": output, "error": error}
-    print(data)
-    # make_patch_request(url, data)
+    make_patch_request(url, data)
 
 
 ###SRC###
 
 
 def lambda_handler(event, context):
+    challenge_id = event["id"]
     original_stdout = sys.stdout
     sys.stdout = StringIO()
     error = None
@@ -60,4 +60,4 @@ def lambda_handler(event, context):
 
     output = sys.stdout.getvalue().encode("utf-8")
     sys.stdout = original_stdout
-    notify_result(output, error)
+    notify_result(challenge_id, output, error)

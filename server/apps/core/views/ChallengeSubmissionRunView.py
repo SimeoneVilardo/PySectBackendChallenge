@@ -32,7 +32,9 @@ class ChallengeSubmissionRunView(UpdateAPIView):
         challenge_submission: ChallengeSubmission = self.get_object()
         challenge: Challenge = challenge_submission.challenge
 
-        response = ChallengeSubmissionRunner.invoke_lambda_function(challenge_submission.lambda_name)
+        response = ChallengeSubmissionRunner.invoke_lambda_function(
+            challenge_submission.lambda_name, payload={"id": challenge_submission.id}
+        )
         challenge_submission.status = ChallengeSubmissionStatusChoices.RUNNING
         challenge_submission.save()
         return Response(status=status.HTTP_202_ACCEPTED)
