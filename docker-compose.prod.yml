@@ -78,9 +78,8 @@ services:
     env_file:
       - ./docker/config/.env
     environment:
-      DJANGO_DATABASE_HOST: db
       VIRTUAL_HOST: api.pysect.letz.dev
-      VIRTUAL_PORT: 9000
+      VIRTUAL_PORT: 8000
     command: ./docker/django/local_run.sh
 
 networks:

@@ -78,8 +78,6 @@ services:
       - webnet
     env_file:
       - ./docker/config/.env
-    environment:
-      DJANGO_DATABASE_HOST: db
     command: ./docker/django/local_run.sh
 networks:
   # Network for your internals, use it by default:
