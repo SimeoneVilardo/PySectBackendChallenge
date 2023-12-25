@@ -26,6 +26,7 @@ SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool, default=False)
+STATIC_ROOT = "/var/www/django/static"
 
 ALLOWED_HOSTS = ["*"]
 
