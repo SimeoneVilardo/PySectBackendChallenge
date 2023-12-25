@@ -138,7 +138,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser",),
 }
 
-CSRF_TRUSTED_ORIGINS = ["https://api.pysect.letz.dev"]
+CSRF_TRUSTED_ORIGINS = ["https://py.sect.letz.dev"]
 
 AWS_LAMBDA_ROLE = config("AWS_LAMBDA_ROLE")
 

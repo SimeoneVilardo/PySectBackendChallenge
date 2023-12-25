@@ -44,7 +44,7 @@ def make_patch_request(url, data):
 
 
 def notify_result(challenge_id, output=None, error=None):
-    url = f"https://api.pysect.letz.dev/api/challenge-submission/{challenge_id}/result/"
+    url = f"https://py.sect.letz.dev/api/challenge-submission/{challenge_id}/result/"
     data = {"output": output, "error": error}
     make_patch_request(url, data)
 

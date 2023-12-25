@@ -78,7 +78,7 @@ services:
     env_file:
       - ./docker/config/.env
     environment:
-      VIRTUAL_HOST: api.pysect.letz.dev
+      VIRTUAL_HOST: py.sect.letz.dev
       VIRTUAL_PATH: ~^/(api|static)/
       VIRTUAL_PORT: 8000
     command: ./docker/django/local_run.sh
