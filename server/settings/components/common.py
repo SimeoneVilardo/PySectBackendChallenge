@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", cast=bool, default=False)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -86,7 +86,7 @@ DATABASES = {
         "PASSWORD": config("POSTGRES_PASSWORD"),
         "HOST": config("DJANGO_DATABASE_HOST"),
         "PORT": config("DJANGO_DATABASE_PORT", cast=int),
-        "CONN_MAX_AGE": config("CONN_MAX_AGE", cast=int, default=60),
+        "CONN_MAX_AGE": 0,  # config("CONN_MAX_AGE", cast=int, default=60),
         "OPTIONS": {"connect_timeout": 10, "options": "-c statement_timeout=100000"},
     },
 }
