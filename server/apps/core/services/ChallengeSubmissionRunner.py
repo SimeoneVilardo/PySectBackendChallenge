@@ -15,8 +15,14 @@ class ChallengeSubmissionRunner:
     def create_zip(cls, input_file, src_file):
         in_memory_zip = io.BytesIO()
         with zipfile.ZipFile(in_memory_zip, mode="w", compression=zipfile.ZIP_DEFLATED) as zipf:
-            zipf.writestr("input.json", input_file)
-            zipf.writestr("lambda_function.py", src_file)
+            input_info = zipfile.ZipInfo("input.json")
+            input_info.external_attr = 0o777 << 16  # permissions -rwxrwxrwx
+            zipf.writestr(input_info, input_file)
+
+            src_info = zipfile.ZipInfo("lambda_function.py")
+            src_info.external_attr = 0o777 << 16  # permissions -rwxrwxrwx
+            zipf.writestr(src_info, src_file)
+
         in_memory_zip.seek(0)
         return in_memory_zip
 
