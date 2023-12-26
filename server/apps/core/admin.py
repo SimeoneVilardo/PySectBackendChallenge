@@ -10,5 +10,5 @@ class ChallengeAdmin(admin.ModelAdmin):
 
 @admin.register(ChallengeSubmission)
 class ChallengeSubmissionAdmin(admin.ModelAdmin):
-    list_display = ("id", "challenge")
+    list_display = ("id", "challenge", "status")
     search_fields = ("challenge",)
