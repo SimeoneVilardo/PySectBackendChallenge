@@ -16,18 +16,7 @@ from server.apps.core.tasks.challenge_submission import check_submission_result
 
 class ChallengeSubmissionResultView(UpdateAPIView):
     permission_classes = (IsAuthenticated,)
-    queryset = ChallengeSubmission.objects.all()
     serializer_class = ChallengeSubmissionResultSerializer
-    lookup_field = "id"
-
-    def get_object(self):
-        try:
-            challenge_submission = ChallengeSubmission.objects.get(id=self.kwargs["id"])
-        except ChallengeSubmission.DoesNotExist:
-            raise Http404()
-        if challenge_submission.status != ChallengeSubmissionStatusChoices.RUNNING:
-            raise serializers.ValidationError({"error": "Challenge is not in RUNNING state"})
-        return challenge_submission
 
     def partial_update(self, request, *args, **kwargs):
         print("request.data", request.data)
@@ -39,14 +28,34 @@ class ChallengeSubmissionResultView(UpdateAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         validated_data = serializer.validated_data
 
-        challenge_submission: ChallengeSubmission = self.get_object()
+        challenge_submission_id = validated_data["challenge_submission_id"]
+        try:
+            challenge_submission = ChallengeSubmission.objects.select_related("challenge").get(
+                id=challenge_submission_id
+            )
+        except ChallengeSubmission.DoesNotExist:
+            raise Http404()
+        if challenge_submission.status != ChallengeSubmissionStatusChoices.RUNNING:
+            raise serializers.ValidationError({"error": "Challenge is not in RUNNING state"})
+
+        challenge_submission.error = validated_data["error"]
         challenge_submission.output = (
             validated_data["output"].strip().replace("\r\n", "\n").replace("\r", "\n")
             if validated_data["output"]
             else None
         )
-        challenge_submission.error = validated_data["error"]
-        challenge_submission.save()
 
-        check_submission_result.delay(challenge_submission.id)
+        if challenge_submission.error:
+            challenge_submission.status = ChallengeSubmissionStatusChoices.FAILURE
+            challenge_submission.save()
+            return Response(status=status.HTTP_200_OK)
+
+        challenge: Challenge = challenge_submission.challenge
+        challenge_output = challenge.output.strip().replace("\r\n", "\n").replace("\r", "\n")
+        challenge_submission.status = (
+            ChallengeSubmissionStatusChoices.SUCCESS
+            if challenge_output == challenge_submission.output
+            else ChallengeSubmissionStatusChoices.FAILURE
+        )
+        challenge_submission.save()
         return Response(status=status.HTTP_200_OK)

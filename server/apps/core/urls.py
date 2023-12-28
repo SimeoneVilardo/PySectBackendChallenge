@@ -22,7 +22,7 @@ urlpatterns = [
         "challenge-submission/<int:id>/run/", ChallengeSubmissionRunView.as_view(), name="challenge_submission_run_api"
     ),
     path(
-        "challenge-submission/<int:id>/result/",
+        "challenge-submission/result/",
         ChallengeSubmissionResultView.as_view(),
         name="challenge_submission_result_api",
     ),

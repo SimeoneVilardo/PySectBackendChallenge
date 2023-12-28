@@ -4,6 +4,7 @@ import json
 from io import StringIO
 import urllib.request
 import traceback
+import boto3
 
 with open("input.json") as input_file:
     parsed_input_list = json.load(input_file)
@@ -20,40 +21,20 @@ def fake_input(prompt=""):
 builtins.input = fake_input
 
 
-def make_patch_request(url, data):
-    try:
-        parts = url.split("/")
-        host = parts[2]
-        json_data = json.dumps(data).encode("utf-8")
-        headers = {
-            "Content-type": "application/json",
-            "Host": host,
-            "Accept": "*/*",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Connection": "keep-alive",
-            "User-Agent": "pysect-lambda",
-        }
-        request = urllib.request.Request(url, data=json_data, method="PATCH", headers=headers)
-        with urllib.request.urlopen(request) as response:
-            status_code = response.getcode()
-            return status_code
-    except urllib.error.HTTPError as e:
-        return e.code
-    except urllib.error.URLError as e:
-        return None
-
-
-def notify_result(challenge_id, output=None, error=None):
-    url = f"https://py.sect.letz.dev/api/challenge-submission/{challenge_id}/result/"
-    data = {"output": output, "error": error}
-    make_patch_request(url, data)
+def notify_result(challenge_submission_id, output=None, error=None):
+    data = {"output": output, "error": error, "challenge_submission_id": challenge_submission_id}
+    sns = boto3.client("sns", region_name="eu-north-1")
+    sns.publish(
+        TopicArn="arn:aws:sns:eu-north-1:340650704585:challenge-submission-result",
+        Message=json.dumps(data),
+    )
 
 
 ###SRC###
 
 
 def lambda_handler(event, context):
-    challenge_id = event["id"]
+    challenge_submission_id = event["id"]
     original_stdout = sys.stdout
     sys.stdout = StringIO()
     error = None
@@ -73,4 +54,4 @@ def lambda_handler(event, context):
     if not output:
         output = None
     sys.stdout = original_stdout
-    notify_result(challenge_id, output, error)
+    notify_result(challenge_submission_id, output, error)
