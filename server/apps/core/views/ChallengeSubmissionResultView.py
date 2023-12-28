@@ -5,6 +5,7 @@ from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import serializers
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.models import ChallengeSubmission, Challenge
@@ -14,6 +15,7 @@ from server.apps.core.tasks.challenge_submission import check_submission_result
 
 
 class ChallengeSubmissionResultView(UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = ChallengeSubmission.objects.all()
     serializer_class = ChallengeSubmissionResultSerializer
     lookup_field = "id"

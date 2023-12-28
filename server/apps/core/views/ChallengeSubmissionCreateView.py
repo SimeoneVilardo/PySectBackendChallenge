@@ -6,6 +6,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
@@ -16,6 +17,7 @@ from server.apps.core.tasks.challenge_submission import create_lambda_function
 
 
 class ChallengeSubmissionCreateView(generics.CreateAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = ChallengeSubmission.objects.all()
     parser_classes = (MultiPartParser,)
 
