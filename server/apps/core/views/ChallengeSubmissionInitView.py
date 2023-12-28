@@ -14,7 +14,7 @@ from server.apps.core.serializers import NotificationSerializer
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
 
 
-class NotificationView(generics.CreateAPIView):
+class ChallengeSubmissionInitView(generics.CreateAPIView):
     serializer_class = NotificationSerializer
 
     def create(self, request, *args, **kwargs):
@@ -24,6 +24,7 @@ class NotificationView(generics.CreateAPIView):
         return Response(status=status.HTTP_201_CREATED)
 
     def perform_create(self, serializer):
+        print("validated_data", serializer.validated_data)
         message = serializer.validated_data.get("Message")
         challenge_submission_id = message.get("challenge_submission_id")
         if not challenge_submission_id:

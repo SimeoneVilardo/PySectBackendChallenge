@@ -5,11 +5,11 @@ from server.apps.core.views.DummyView import DummyView
 from server.apps.core.views.ChallengeSubmissionRunView import ChallengeSubmissionRunView
 from server.apps.core.views.ChallengeView import ChallengeView
 from server.apps.core.views.ChallengeSubmissionCreateView import ChallengeSubmissionCreateView
-from server.apps.core.views.NotificationView import NotificationView
+from server.apps.core.views.ChallengeSubmissionInitView import ChallengeSubmissionInitView
 
 urlpatterns = [
     path("dummy/", DummyView.as_view(), name="dummy_api"),
-    path("notification/", NotificationView.as_view(), name="notification_api"),
+    path("challenge-submission/init/", ChallengeSubmissionInitView.as_view(), name="notification_api"),
     path("login/", obtain_auth_token, name="login_api"),
     path("challenge/<int:id>/", ChallengeView.as_view(), name="challenge_retreive_api"),
     path("challenge/", ChallengeView.as_view(), name="challenge_list_api"),
