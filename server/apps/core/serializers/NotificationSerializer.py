@@ -1,3 +1,6 @@
+from rest_framework import serializers
+import json
+
 """
 Example of data received from SNS:
 {
@@ -13,14 +16,23 @@ Example of data received from SNS:
 }
 """
 
-from rest_framework import serializers
+
+class JSONStringField(serializers.Field):
+    def to_representation(self, value):
+        return value
+
+    def to_internal_value(self, data):
+        try:
+            return json.loads(data)
+        except ValueError:
+            raise serializers.ValidationError("Invalid JSON")
 
 
 class NotificationSerializer(serializers.Serializer):
     Type = serializers.CharField()
     MessageId = serializers.CharField()
     TopicArn = serializers.CharField()
-    Message = serializers.CharField()
+    Message = JSONStringField()
     Timestamp = serializers.CharField()
     SignatureVersion = serializers.CharField()
     Signature = serializers.CharField()

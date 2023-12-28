@@ -17,29 +17,18 @@ from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmiss
 class NotificationView(generics.CreateAPIView):
     serializer_class = NotificationSerializer
 
-    def post(self, request):
-        print("request.data", request.data)
+    def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        try:
-            serializer.is_valid(raise_exception=True)
-        except serializers.ValidationError as e:
-            print("e.detail", e.detail)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        validated_data = serializer.validated_data
-        print("validated_data", validated_data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
         return Response(status=status.HTTP_201_CREATED)
 
-        print(raw_body)
-        body = json.loads(raw_body)
-        message = body.get("Message")
-        if not message:
-            raise Exception("Message not found in body")
-        message = json.loads(message)
+    def perform_create(self, serializer):
+        message = serializer.validated_data.get("Message")
         challenge_submission_id = message.get("challenge_submission_id")
         if not challenge_submission_id:
             raise Exception("challenge_submission_id not found in message")
         self.create_lambda_function(challenge_submission_id)
-        return Response(status=status.HTTP_201_CREATED)
 
     def create_zip_file(self, challenge: Challenge, challenge_submission: ChallengeSubmission):
         if challenge_submission.src_data is None:
