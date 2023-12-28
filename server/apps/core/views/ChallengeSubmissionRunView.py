@@ -29,8 +29,6 @@ class ChallengeSubmissionRunView(UpdateAPIView):
         return challenge_submission
 
     def partial_update(self, request, *args, **kwargs):
-        user_id = 1  # dummy user id
-        user = User.objects.get(id=user_id)
         challenge_submission: ChallengeSubmission = self.get_object()
         challenge: Challenge = challenge_submission.challenge
 

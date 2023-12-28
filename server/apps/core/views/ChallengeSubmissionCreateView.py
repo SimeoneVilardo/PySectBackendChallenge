@@ -22,15 +22,14 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
     parser_classes = (MultiPartParser,)
 
     def post(self, request, *args, **kwargs):
-        user_id = 1  # dummy user id
-
-        user: User = User.objects.get(id=user_id)
         challenge: Challenge = get_object_or_404(Challenge, id=kwargs["id"])
 
         file_obj: File = request.data.get("file")
         self.is_valid_python_file(file_obj)
 
-        challenge_submission: ChallengeSubmission = self.create_challenge_submission(challenge, user, file_obj)
+        challenge_submission: ChallengeSubmission = self.create_challenge_submission(
+            challenge, request.auth.user, file_obj
+        )
 
         create_lambda_function.delay(challenge_submission.id)
         return Response(status=status.HTTP_201_CREATED)

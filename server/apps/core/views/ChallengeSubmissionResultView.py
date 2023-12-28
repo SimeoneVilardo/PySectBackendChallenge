@@ -30,9 +30,6 @@ class ChallengeSubmissionResultView(UpdateAPIView):
         return challenge_submission
 
     def partial_update(self, request, *args, **kwargs):
-        user_id = 1  # dummy user id
-        user = User.objects.get(id=user_id)
-
         print("request.data", request.data)
         serializer = self.get_serializer(data=request.data)
         try:
