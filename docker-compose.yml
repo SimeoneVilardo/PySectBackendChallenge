@@ -10,28 +10,6 @@
 version: "3.9"
 services:
 
-  celery-worker:
-    image: "pysect-backend-celery-worker:dev"
-    container_name: pysect-backend-celery-worker
-    command: celery -A server worker -l INFO
-    volumes:
-      - .:/code
-    build:
-      context: .
-      dockerfile: ./docker/celery/Dockerfile
-    env_file:
-      - ./docker/config/.env
-    depends_on:
-      - web
-    networks:
-      - webnet
-
-  redis:
-    image: redis:latest
-    container_name: pysect-backend-redis
-    networks:
-      - webnet
-
   db:
     image: "postgres:13.10-alpine"
     container_name: pysect-backend-db
@@ -73,7 +51,6 @@ services:
       - .:/code
     depends_on:
       - db
-      - redis
     networks:
       - webnet
     env_file:

@@ -12,7 +12,6 @@ from server.apps.core.serializers import NotificationSerializer
 from server.apps.core.models import ChallengeSubmission, Challenge
 from server.apps.core.serializers import ChallengeSubmissionResultSerializer, ChallengeSubmissionSerializer
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
-from server.apps.core.tasks.challenge_submission import check_submission_result
 
 
 class ChallengeSubmissionResultView(CreateAPIView):

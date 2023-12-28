@@ -13,5 +13,3 @@ python-decouple==3.8
 pytz==2023.3.post1
 sqlparse==0.4.4
 boto3==1.34.6
-celery==5.3.6
-redis==5.0.1
