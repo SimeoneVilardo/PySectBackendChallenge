@@ -21,15 +21,18 @@ class NotificationView(APIView):
         print("Headers:", request.headers)
         print("Body:", request.data)
         print("Query parameters:", request.query_params)
-        body = json.loads(request.body)
-        message = body.get("Message")
-        if not message:
-            raise Exception("Message not found in body")
-        message = json.loads(message)
-        challenge_submission_id = message.get("challenge_submission_id")
-        if not challenge_submission_id:
-            raise Exception("challenge_submission_id not found in message")
-        print("challenge_submission_id:", challenge_submission_id)
+        try:
+            body = json.loads(request.body)
+            message = body.get("Message")
+            if not message:
+                raise Exception("Message not found in body")
+            message = json.loads(message)
+            challenge_submission_id = message.get("challenge_submission_id")
+            if not challenge_submission_id:
+                raise Exception("challenge_submission_id not found in message")
+            print("challenge_submission_id:", challenge_submission_id)
+        except Exception as e:
+            print("Error:", str(e))
 
         return Response(status=status.HTTP_201_CREATED)
 

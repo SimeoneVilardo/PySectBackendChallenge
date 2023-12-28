@@ -15,6 +15,7 @@ from server.apps.core.serializers import ChallengeSubmissionSerializer
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
 from server.apps.core.tasks.challenge_submission import create_lambda_function
 import boto3
+import json
 
 
 class ChallengeSubmissionCreateView(generics.CreateAPIView):
@@ -36,7 +37,7 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
         sns = boto3.client("sns", region_name="eu-north-1")
         sns.publish(
             TopicArn="arn:aws:sns:eu-north-1:340650704585:challenge-submission-create",
-            Message=str(challenge_submission.id),
+            Message=json.dumps({"challenge_submission_id": challenge_submission.id}),
         )
 
         # create_lambda_function.delay(challenge_submission.id)
