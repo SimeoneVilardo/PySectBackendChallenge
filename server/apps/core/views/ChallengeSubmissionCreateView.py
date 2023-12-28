@@ -14,6 +14,7 @@ from server.apps.core.models import Challenge, ChallengeSubmission
 from server.apps.core.serializers import ChallengeSubmissionSerializer
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
 from server.apps.core.tasks.challenge_submission import create_lambda_function
+import boto3
 
 
 class ChallengeSubmissionCreateView(generics.CreateAPIView):
@@ -31,7 +32,14 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
             challenge, request.auth.user, file_obj
         )
 
-        create_lambda_function.delay(challenge_submission.id)
+        # Publish message to SNS topic
+        sns = boto3.client("sns", region_name="eu-north-1")
+        sns.publish(
+            TopicArn="arn:aws:sns:eu-north-1:340650704585:challenge-submission-create",
+            Message=str(challenge_submission.id),
+        )
+
+        # create_lambda_function.delay(challenge_submission.id)
         return Response(status=status.HTTP_201_CREATED)
 
     def is_valid_python_file(self, file_obj: File):
