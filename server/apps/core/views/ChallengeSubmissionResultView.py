@@ -26,9 +26,9 @@ class ChallengeSubmissionResultView(CreateAPIView):
 
     def perform_create(self, serializer):
         validated_data = serializer.validated_data
-        print("ChallengeSubmissionResultView.perform_create", validated_data)
+        message = validated_data.get("Message")
 
-        challenge_submission_id = validated_data["challenge_submission_id"]
+        challenge_submission_id = message["challenge_submission_id"]
         try:
             challenge_submission = ChallengeSubmission.objects.select_related("challenge").get(
                 id=challenge_submission_id
@@ -38,11 +38,9 @@ class ChallengeSubmissionResultView(CreateAPIView):
         if challenge_submission.status != ChallengeSubmissionStatusChoices.RUNNING:
             raise serializers.ValidationError({"error": "Challenge is not in RUNNING state"})
 
-        challenge_submission.error = validated_data["error"]
+        challenge_submission.error = message["error"]
         challenge_submission.output = (
-            validated_data["output"].strip().replace("\r\n", "\n").replace("\r", "\n")
-            if validated_data["output"]
-            else None
+            message["output"].strip().replace("\r\n", "\n").replace("\r", "\n") if message["output"] else None
         )
 
         if challenge_submission.error:
