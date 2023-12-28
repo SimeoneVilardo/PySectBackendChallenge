@@ -19,7 +19,6 @@ class NotificationView(APIView):
 
     def post(self, request):
         print("Headers:", request.headers)
-        print("Body:", request.data)
         print("Query parameters:", request.query_params)
         try:
             body = json.loads(request.body)
