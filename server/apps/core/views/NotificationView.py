@@ -2,18 +2,33 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import BaseParser
+from rest_framework import serializers
 import json
+from rest_framework import generics
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
+from rest_framework.parsers import JSONParser
 
 from server.apps.core.models import ChallengeSubmission
 from server.apps.core.models.challenge import Challenge
+from server.apps.core.serializers import NotificationSerializer
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
 
 
-class NotificationView(APIView):
+class NotificationView(generics.CreateAPIView):
+    serializer_class = NotificationSerializer
+
     def post(self, request):
-        raw_body = request.body
-        print(request.headers)
+        print("request.data", request.data)
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except serializers.ValidationError as e:
+            print("e.detail", e.detail)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        validated_data = serializer.validated_data
+        print("validated_data", validated_data)
+        return Response(status=status.HTTP_201_CREATED)
+
         print(raw_body)
         body = json.loads(raw_body)
         message = body.get("Message")
