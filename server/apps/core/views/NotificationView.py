@@ -10,20 +10,12 @@ from server.apps.core.models.challenge import Challenge
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
 
 
-class PlainTextParser(BaseParser):
-    media_type = "text/plain"
-
-    def parse(self, stream, media_type=None, parser_context=None):
-        return stream.read()
-
-
 class NotificationView(APIView):
-    parser_classes = [
-        PlainTextParser,
-    ]
-
     def post(self, request):
-        body = json.loads(request.body)
+        raw_body = request.body
+        print(request.headers)
+        print(raw_body)
+        body = json.loads(raw_body)
         message = body.get("Message")
         if not message:
             raise Exception("Message not found in body")
