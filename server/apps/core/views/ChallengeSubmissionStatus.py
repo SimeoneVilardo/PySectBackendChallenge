@@ -5,8 +5,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
 from rest_framework.renderers import BaseRenderer
-
+import boto3
 from server.apps.core.auth import QueryStringTokenAuthentication
+from server.apps.core.services.QueueService import QueueService
+
+sqs = boto3.resource("sqs", region_name="eu-north-1")
 
 
 class ServerSentEventRenderer(BaseRenderer):
@@ -22,13 +25,8 @@ class ChallengeSubmissionStatus(APIView):
     authentication_classes = [QueryStringTokenAuthentication]
     renderer_classes = [JSONRenderer, ServerSentEventRenderer]
 
-    async def listen_to_channel(self, user) -> AsyncGenerator:
-        for i in range(100):
-            yield f"data: {user.username}-{i}\n\n"
-            await asyncio.sleep(1)
-
     def get(self, request):
-        generator = self.listen_to_channel(request.user)
+        generator = QueueService.status_consumer(request.user)
         response = StreamingHttpResponse(streaming_content=generator, content_type="text/event-stream")
         response["X-Accel-Buffering"] = "no"  # Disable buffering in nginx
         response["Cache-Control"] = "no-cache"  # Ensure clients don't cache the data

@@ -12,6 +12,9 @@ from server.apps.core.serializers import NotificationSerializer
 from server.apps.core.models import ChallengeSubmission, Challenge
 from server.apps.core.serializers import ChallengeSubmissionResultSerializer, ChallengeSubmissionSerializer
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
+import boto3
+
+sqs = boto3.client("sqs", region_name="eu-north-1")
 
 
 class ChallengeSubmissionResultView(CreateAPIView):
@@ -55,4 +58,15 @@ class ChallengeSubmissionResultView(CreateAPIView):
             else ChallengeSubmissionStatusChoices.FAILURE
         )
         challenge_submission.save()
+
+        response = sqs.send_message(
+            QueueUrl="https://sqs.eu-north-1.amazonaws.com/340650704585/challenge-submission-status.fifo",
+            MessageBody="",
+            MessageAttributes={
+                "challenge_submission_id": {"DataType": "Number", "StringValue": str(challenge_submission.id)},
+                "user_id": {"DataType": "Number", "StringValue": str(challenge_submission.user.id)},
+                "status": {"DataType": "String", "StringValue": challenge_submission.status},
+            },
+            MessageGroupId=challenge_submission.user.username,
+        )
         return Response(status=status.HTTP_200_OK)
