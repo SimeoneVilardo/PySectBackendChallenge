@@ -27,9 +27,9 @@ urlpatterns = [
         ChallengeSubmissionResultView.as_view(),
         name="challenge_submission_result_api",
     ),
-    """     path(
+    path(
         "challenge-submission/status/",
         ChallengeSubmissionStatus.as_view(),
         name="challenge_submission_status_api",
-    ), """,
+    ),
 ]
