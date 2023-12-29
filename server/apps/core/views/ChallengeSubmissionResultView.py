@@ -61,7 +61,7 @@ class ChallengeSubmissionResultView(CreateAPIView):
 
         response = sqs.send_message(
             QueueUrl="https://sqs.eu-north-1.amazonaws.com/340650704585/challenge-submission-status.fifo",
-            MessageBody="",
+            MessageBody="status_update",
             MessageAttributes={
                 "challenge_submission_id": {"StringValue": str(challenge_submission.id), "DataType": "String"},
                 "user_id": {"StringValue": str(challenge_submission.user.id), "DataType": "String"},
