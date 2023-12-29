@@ -11,8 +11,8 @@ urlpatterns = [
     path("dummy/", DummyView.as_view(), name="dummy_api"),
     path("challenge-submission/init/", ChallengeSubmissionInitView.as_view(), name="notification_api"),
     path("login/", obtain_auth_token, name="login_api"),
-    path("challenge/<int:id>/", ChallengeView.as_view(), name="challenge_retreive_api"),
-    path("challenge/", ChallengeView.as_view(), name="challenge_list_api"),
+    path("challenges/<int:id>/", ChallengeView.as_view(), name="challenge_retreive_api"),
+    path("challenges/", ChallengeView.as_view(), name="challenge_list_api"),
     path(
         "challenge-submission/<int:id>/",
         ChallengeSubmissionCreateView.as_view(),
