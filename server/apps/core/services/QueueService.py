@@ -18,21 +18,23 @@ class QueueService:
             cls._listener = cls._create_listener()
         return cls._listener
 
+    # @classmethod
+    # async def _create_listener(cls):
+    #     while True:
+    #         yield f"data: foo\n\n"
+    #         await asyncio.sleep(4)
+
     @classmethod
     async def _create_listener(cls):
         while True:
-            yield f"data: foo\n\n"
-            await asyncio.sleep(4)
-
-
-"""     @classmethod
-    async def _create_listener(cls):
-        while True:
-            messages = cls.queue.receive_messages(
-                AttributeNames=["All"], MessageAttributeNames=["All"], MaxNumberOfMessages=1, WaitTimeSeconds=20
+            messages = await asyncio.to_thread(
+                cls.queue.receive_messages,
+                AttributeNames=["All"],
+                MessageAttributeNames=["All"],
+                MaxNumberOfMessages=1,
+                WaitTimeSeconds=20,
             )
             for message in messages:
                 attributes = json.dumps(message.message_attributes)
                 yield f"data: {attributes}\n\n"
-                message.delete()
-                await asyncio.sleep(0.1) """
+                await asyncio.to_thread(message.delete)
