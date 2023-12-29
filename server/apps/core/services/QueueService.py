@@ -1,5 +1,8 @@
+import asyncio
+from types import AsyncGeneratorType
 from typing import AsyncGenerator
 import boto3
+import json
 from django.conf import settings
 
 
@@ -10,18 +13,19 @@ class QueueService:
     _listener = None
 
     @classmethod
-    async def status_consumer(cls) -> AsyncGenerator:
+    def status_consumer(cls):
         if cls._listener is None:
             cls._listener = cls._create_listener()
         return cls._listener
 
     @classmethod
-    async def _create_listener(cls) -> AsyncGenerator:
+    async def _create_listener(cls):
         while True:
             messages = cls.queue.receive_messages(
                 AttributeNames=["All"], MessageAttributeNames=["All"], MaxNumberOfMessages=1, WaitTimeSeconds=20
             )
             for message in messages:
-                data = message.message_attributes
-                yield data
+                attributes = json.dumps(message.message_attributes)
+                yield f"data: {attributes}\n\n"
                 message.delete()
+                await asyncio.sleep(0.1)

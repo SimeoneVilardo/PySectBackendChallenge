@@ -63,9 +63,9 @@ class ChallengeSubmissionResultView(CreateAPIView):
             QueueUrl="https://sqs.eu-north-1.amazonaws.com/340650704585/challenge-submission-status.fifo",
             MessageBody="",
             MessageAttributes={
-                "challenge_submission_id": {"DataType": "Number", "StringValue": str(challenge_submission.id)},
-                "user_id": {"DataType": "Number", "StringValue": str(challenge_submission.user.id)},
-                "status": {"DataType": "String", "StringValue": challenge_submission.status},
+                "challenge_submission_id": str(challenge_submission.id),
+                "user_id": str(challenge_submission.user.id),
+                "status": challenge_submission.status,
             },
             MessageGroupId=challenge_submission.user.username,
         )
