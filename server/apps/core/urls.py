@@ -1,6 +1,7 @@
 from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
 from server.apps.core.views.ChallengeSubmissionResultView import ChallengeSubmissionResultView
+from server.apps.core.views.ChallengeSubmissionStatus import ChallengeSubmissionStatus
 from server.apps.core.views.DummyView import DummyView
 from server.apps.core.views.ChallengeSubmissionRunView import ChallengeSubmissionRunView
 from server.apps.core.views.ChallengeView import ChallengeView
@@ -25,5 +26,10 @@ urlpatterns = [
         "challenge-submission/result/",
         ChallengeSubmissionResultView.as_view(),
         name="challenge_submission_result_api",
+    ),
+    path(
+        "challenge-submission/status/",
+        ChallengeSubmissionStatus.as_view(),
+        name="challenge_submission_status_api",
     ),
 ]
