@@ -68,5 +68,6 @@ class ChallengeSubmissionResultView(CreateAPIView):
                 "status": {"StringValue": challenge_submission.status, "DataType": "String"},
             },
             MessageGroupId=challenge_submission.user.username,
+            MessageDeduplicationId=challenge_submission.id,
         )
         return Response(status=status.HTTP_200_OK)
