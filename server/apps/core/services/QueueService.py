@@ -16,15 +16,12 @@ class QueueService:
         return cls._listener
 
     @classmethod
-    async def _create_listener(cls, user) -> AsyncGenerator:
+    async def _create_listener(cls) -> AsyncGenerator:
         while True:
             messages = cls.queue.receive_messages(
                 AttributeNames=["All"], MessageAttributeNames=["All"], MaxNumberOfMessages=1, WaitTimeSeconds=20
             )
             for message in messages:
                 data = message.message_attributes
-                user_id = data.get("user_id").get("StringValue")
-                if user_id != str(user.id):
-                    continue
                 yield data
                 message.delete()

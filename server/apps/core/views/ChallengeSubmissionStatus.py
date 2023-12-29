@@ -26,7 +26,7 @@ class ChallengeSubmissionStatus(APIView):
     renderer_classes = [JSONRenderer, ServerSentEventRenderer]
 
     def get(self, request):
-        generator = QueueService.status_consumer(request.auth.user)
+        generator = QueueService.status_consumer()
         response = StreamingHttpResponse(streaming_content=generator, content_type="text/event-stream")
         response["X-Accel-Buffering"] = "no"  # Disable buffering in nginx
         response["Cache-Control"] = "no-cache"  # Ensure clients don't cache the data
