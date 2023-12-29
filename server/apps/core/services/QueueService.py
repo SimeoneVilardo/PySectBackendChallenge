@@ -35,6 +35,10 @@ class QueueService:
                 WaitTimeSeconds=20,
             )
             for message in messages:
-                attributes = json.dumps(message.message_attributes)
-                yield f"data: {attributes}\n\n"
+                attributes = message.message_attributes
+                challenge_submission_id = attributes["challenge_submission_id"]["StringValue"]
+                user_id = attributes["user_id"]["StringValue"]
+                status = attributes["status"]["StringValue"]
+                payload = {"challenge_submission_id": challenge_submission_id, "user_id": user_id, "status": status}
+                yield f"data: {json.dumps(payload)}\n\n"
                 await asyncio.to_thread(message.delete)
