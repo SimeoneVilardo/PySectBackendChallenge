@@ -12,11 +12,11 @@ class QueueService:
     queue = sqs.Queue(queue_url)
     _listener = None
 
-    @classmethod
-    def status_consumer(cls):
-        if cls._listener is None:
-            cls._listener = cls._create_listener()
-        return cls._listener
+    # @classmethod
+    # def status_consumer(cls):
+    #     if cls._listener is None:
+    #         cls._listener = cls._create_listener()
+    #     return cls._listener
 
     # @classmethod
     # async def _create_listener(cls):
@@ -25,7 +25,7 @@ class QueueService:
     #         await asyncio.sleep(4)
 
     @classmethod
-    async def _create_listener(cls):
+    async def status_consumer(cls):
         while True:
             for i in range(10):
                 yield f"data: {i}\n\n"
