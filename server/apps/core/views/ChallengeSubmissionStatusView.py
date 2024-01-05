@@ -11,7 +11,7 @@ from server.apps.core.serializers import ChallengeSubmissionStatusSerializer
 
 
 class ChallengeSubmissionStatusView(RetrieveAPIView):
-    permission_classes = [HasAPIKey]
+    permission_classes = [IsAuthenticated]
     queryset = ChallengeSubmission.objects.all()
     serializer_class = ChallengeSubmissionStatusSerializer
     lookup_field = "id"

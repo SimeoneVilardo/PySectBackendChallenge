@@ -17,7 +17,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      - webnet
+      - pysect-network
     ports:
       - "9001:5432"
     env_file:
@@ -29,7 +29,7 @@ services:
     ports:
       - "9002:6379"
     networks:
-      - webnet
+      - pysect-network
 
   web:
     image: "pysect-backend:dev"
@@ -50,7 +50,6 @@ services:
         - "pysect-backend:dev"
         - "pysect-backend:latest"
         - "*"
-
     volumes:
       - django-static:/var/www/django/static
       # We should only mount source code in development:
@@ -58,13 +57,15 @@ services:
     depends_on:
       - db
     networks:
-      - webnet
+      - pysect-network
     env_file:
       - ./docker/config/.env
     command: ./docker/django/local_run.sh
+
 networks:
   # Network for your internals, use it by default:
-  webnet:
+  pysect-network:
+    external: true
 
 
 volumes:

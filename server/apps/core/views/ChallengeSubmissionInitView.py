@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import BaseParser
 from rest_framework import serializers
-import json
+from django.contrib.auth.models import User
+import redis
 from rest_framework import generics
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from rest_framework.parsers import JSONParser
@@ -16,6 +17,7 @@ from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmiss
 
 class ChallengeSubmissionInitView(generics.CreateAPIView):
     serializer_class = NotificationSerializer
+    r = redis.Redis(host="pysect-backend-redis", port=6379)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -29,7 +31,15 @@ class ChallengeSubmissionInitView(generics.CreateAPIView):
         challenge_submission_id = message.get("challenge_submission_id")
         if not challenge_submission_id:
             raise Exception("challenge_submission_id not found in message")
-        self.create_lambda_function(challenge_submission_id)
+        challenge_submission = ChallengeSubmission.objects.select_related("challenge", "user").get(
+            id=challenge_submission_id
+        )
+        self.create_lambda_function(challenge_submission)
+        self.publish_update_message(challenge_submission)
+
+    def publish_update_message(self, challenge_submission: ChallengeSubmission):
+        user: User = challenge_submission.user
+        self.r.publish(user.username, str(challenge_submission.id))
 
     def create_zip_file(self, challenge: Challenge, challenge_submission: ChallengeSubmission):
         if challenge_submission.src_data is None:
@@ -47,8 +57,7 @@ class ChallengeSubmissionInitView(generics.CreateAPIView):
         challenge_submission.status = ChallengeSubmissionStatusChoices.READY
         challenge_submission.save()
 
-    def create_lambda_function(self, challenge_submission_id: int):
-        challenge_submission = ChallengeSubmission.objects.select_related("challenge").get(id=challenge_submission_id)
+    def create_lambda_function(self, challenge_submission: ChallengeSubmission):
         challenge: Challenge = challenge_submission.challenge
         try:
             zip_file = self.create_zip_file(challenge, challenge_submission)

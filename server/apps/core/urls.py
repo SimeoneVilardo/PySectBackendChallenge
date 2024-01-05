@@ -11,7 +11,7 @@ from server.apps.core.views.ChallengeSubmissionInitView import ChallengeSubmissi
 
 urlpatterns = [
     path("dummy/", DummyView.as_view(), name="dummy_api"),
-    path("challenge-submission/init/", ChallengeSubmissionInitView.as_view(), name="notification_api"),
+    path("challenge-submission/init/", ChallengeSubmissionInitView.as_view(), name="challenge_submission_init_api"),
     path("login/", obtain_auth_token, name="login_api"),
     path("challenges/<int:id>/", ChallengeView.as_view(), name="challenge_retreive_api"),
     path("challenges/", ChallengeView.as_view(), name="challenge_list_api"),

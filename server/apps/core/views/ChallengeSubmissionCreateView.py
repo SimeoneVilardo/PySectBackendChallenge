@@ -21,6 +21,7 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = ChallengeSubmission.objects.all()
     parser_classes = (MultiPartParser,)
+    serializer_class = ChallengeSubmissionSerializer
 
     def post(self, request, *args, **kwargs):
         challenge: Challenge = get_object_or_404(Challenge, id=kwargs["id"])
@@ -39,8 +40,8 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
             Message=json.dumps({"challenge_submission_id": challenge_submission.id}),
         )
 
-        # create_lambda_function.delay(challenge_submission.id)
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = self.get_serializer(challenge_submission)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def is_valid_python_file(self, file_obj: File):
         if not file_obj:
