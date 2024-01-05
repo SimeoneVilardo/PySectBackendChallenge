@@ -24,6 +24,12 @@ services:
     env_file:
       - ./docker/config/.env
 
+  redis:
+    image: redis:latest
+    container_name: pysect-backend-redis
+    networks:
+      - nginx-reverse-proxy-net
+
   web:
     image: "pysect-backend:dev"
     container_name: pysect-backend-web

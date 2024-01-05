@@ -4,6 +4,7 @@ from typing import AsyncGenerator
 import boto3
 import json
 from django.conf import settings
+import redis
 
 
 class QueueService:
@@ -26,22 +27,10 @@ class QueueService:
 
     @classmethod
     async def status_consumer(cls):
+        redis_instance = redis.StrictRedis(host="localhost", port=6379, db=0)
+        pubsub = redis_instance.pubsub()
+        pubsub.subscribe("foo_queue")
         while True:
-            for i in range(10):
-                yield f"data: {i}\n\n"
-                await asyncio.sleep(3)
-            # messages = await asyncio.to_thread(
-            #     cls.queue.receive_messages,
-            #     AttributeNames=["All"],
-            #     MessageAttributeNames=["All"],
-            #     MaxNumberOfMessages=1,
-            #     WaitTimeSeconds=20,
-            # )
-            # for message in messages:
-            #     attributes = message.message_attributes
-            #     challenge_submission_id = attributes["challenge_submission_id"]["StringValue"]
-            #     user_id = attributes["user_id"]["StringValue"]
-            #     status = attributes["status"]["StringValue"]
-            #     payload = {"challenge_submission_id": challenge_submission_id, "user_id": user_id, "status": status}
-            #     yield f"data: {json.dumps(payload)}\n\n"
-            #     await asyncio.to_thread(message.delete)
+            for message in pubsub.listen():
+                data = json.dumps({"message": message["data"].decode("utf-8")})
+                yield f"data: {data}\n\n"
