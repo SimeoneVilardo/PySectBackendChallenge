@@ -12,7 +12,6 @@ from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.models import Challenge, ChallengeSubmission
 from server.apps.core.serializers import ChallengeSubmissionSerializer
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
-from server.apps.core.tasks.challenge_submission import create_lambda_function
 
 
 class LoginView(generics.CreateAPIView):

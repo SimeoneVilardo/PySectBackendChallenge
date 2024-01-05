@@ -3,3 +3,4 @@ from .ChallengeSubmissionSerializer import ChallengeSubmissionSerializer
 from .ChallengeSubmissionResultSerializer import ChallengeSubmissionResultSerializer
 from .NotificationSerializer import NotificationSerializer
 from .ChallengeSubmissionStatusSerializer import ChallengeSubmissionStatusSerializer
+from .UserSerializer import UserSerializer
