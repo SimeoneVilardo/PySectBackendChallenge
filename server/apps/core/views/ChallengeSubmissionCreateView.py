@@ -31,9 +31,7 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
         file_obj: File = request.data.get("file")
         self.is_valid_python_file(file_obj)
 
-        challenge_submission: ChallengeSubmission = self.create_challenge_submission(
-            challenge, request.auth.user, file_obj
-        )
+        challenge_submission: ChallengeSubmission = self.create_challenge_submission(challenge, request.user, file_obj)
 
         # Publish message to SNS topic
         sns = boto3.client("sns", region_name=settings.AWS_DEFAULT_REGION)
