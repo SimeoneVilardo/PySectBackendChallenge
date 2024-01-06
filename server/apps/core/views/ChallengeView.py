@@ -1,11 +1,13 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from server.apps.core.auth import CookieTokenAuthentication
 from server.apps.core.models import Challenge
 from server.apps.core.serializers import ChallengeSerializer
 
 
 class ChallengeView(GenericAPIView, ListModelMixin, RetrieveModelMixin):
+    authentication_classes = (CookieTokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     queryset = Challenge.objects.all()
     serializer_class = ChallengeSerializer

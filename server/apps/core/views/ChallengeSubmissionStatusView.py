@@ -2,11 +2,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
+from server.apps.core.auth import CookieTokenAuthentication
 from server.apps.core.models import ChallengeSubmission
 from server.apps.core.serializers import ChallengeSubmissionStatusSerializer
 
 
 class ChallengeSubmissionStatusView(RetrieveAPIView):
+    authentication_classes = (CookieTokenAuthentication,)
     permission_classes = [IsAuthenticated]
     queryset = ChallengeSubmission.objects.all()
     serializer_class = ChallengeSubmissionStatusSerializer

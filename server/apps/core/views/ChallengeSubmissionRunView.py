@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
+from server.apps.core.auth import CookieTokenAuthentication
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.models import ChallengeSubmission, Challenge
 from server.apps.core.serializers import ChallengeSubmissionSerializer
@@ -13,6 +14,7 @@ from server.apps.core.services.AwsLambdaService import AwsLambdaService
 
 
 class ChallengeSubmissionRunView(UpdateAPIView):
+    authentication_classes = (CookieTokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     queryset = ChallengeSubmission.objects.all()
     lookup_field = "id"

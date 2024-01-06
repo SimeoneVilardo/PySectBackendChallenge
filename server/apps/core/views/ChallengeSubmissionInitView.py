@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
-from server.apps.core.auth import SNSAuthentication
+from server.apps.core.auth import SNSPermission
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.models import ChallengeSubmission
 from server.apps.core.models.challenge import Challenge
@@ -12,7 +12,8 @@ from server.apps.core.services.NotificationQueueService import NotificationQueue
 
 class ChallengeSubmissionInitView(generics.CreateAPIView):
     serializer_class = NotificationSerializer
-    authentication_classes = [SNSAuthentication]
+    authentication_classes = []
+    permission_classes = [SNSPermission]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

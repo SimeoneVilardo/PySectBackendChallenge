@@ -1,3 +1,4 @@
 from .BearerTokenAuthentication import BearerTokenAuthentication
 from .QueryStringTokenAuthentication import QueryStringTokenAuthentication
-from .SNSAuthentication import SNSAuthentication
+from .SNSPermission import SNSPermission
+from .CookieTokenAuthentication import CookieTokenAuthentication

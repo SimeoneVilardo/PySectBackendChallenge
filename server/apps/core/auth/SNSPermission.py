@@ -1,4 +1,5 @@
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.permissions import BasePermission
 from rest_framework.exceptions import AuthenticationFailed
 import base64
 from cryptography.hazmat.backends import default_backend
@@ -12,13 +13,11 @@ from urllib.parse import urlparse
 cache = dict()
 
 
-class SNSAuthentication(BaseAuthentication):
+class SNSPermission(BasePermission):
     default_host_pattern = re.compile(r"^sns\.[a-zA-Z0-9\-]{3,}\.amazonaws\.com(\.cn)?$")
 
-    def authenticate(self, request):
-        if not self.validate_url(request.data["SigningCertURL"]) or not self.verify_sns_data(request.data):
-            raise AuthenticationFailed("Invalid SNS message")
-        return ("AWS_SNS", "AWS_SNS")
+    def has_permission(self, request, view):
+        return self.validate_url(request.data["SigningCertURL"]) and self.verify_sns_data(request.data)
 
     def validate_url(self, url_to_validate, host_pattern=None):
         if host_pattern is None:
