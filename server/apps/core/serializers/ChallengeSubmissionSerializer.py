@@ -5,4 +5,4 @@ from server.apps.core.models.challenge_submission import ChallengeSubmission
 class ChallengeSubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChallengeSubmission
-        fields = "__all__"
+        exclude = ["lambda_name", "src_data"]
