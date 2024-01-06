@@ -13,7 +13,6 @@ from django.contrib.auth.models import User
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.models import Challenge, ChallengeSubmission
 from server.apps.core.serializers import ChallengeSubmissionSerializer
-from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
 import boto3
 import json
 

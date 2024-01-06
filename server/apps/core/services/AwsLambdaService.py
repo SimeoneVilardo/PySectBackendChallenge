@@ -6,7 +6,7 @@ import json
 from django.conf import settings
 
 
-class ChallengeSubmissionRunner:
+class AwsLambdaService:
     lambda_client = boto3.client("lambda")
     ecr_client = boto3.client("ecr")
     iam_client = boto3.client("iam")

@@ -1,22 +1,12 @@
-import os
-from django.conf import settings
 from django.http import Http404
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import serializers
-from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth.models import User
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.serializers import NotificationSerializer
 from server.apps.core.models import ChallengeSubmission, Challenge
-from server.apps.core.serializers import ChallengeSubmissionResultSerializer, ChallengeSubmissionSerializer
-from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
-import boto3
-
 from server.apps.core.services.NotificationQueueService import NotificationQueueService
-
-sqs = boto3.client("sqs", region_name=settings.AWS_DEFAULT_REGION)
 
 
 class ChallengeSubmissionResultView(CreateAPIView):
@@ -50,6 +40,7 @@ class ChallengeSubmissionResultView(CreateAPIView):
         if challenge_submission.error:
             challenge_submission.status = ChallengeSubmissionStatusChoices.FAILURE
             challenge_submission.save()
+            NotificationQueueService.publish(challenge_submission)
             return Response(status=status.HTTP_200_OK)
 
         challenge: Challenge = challenge_submission.challenge

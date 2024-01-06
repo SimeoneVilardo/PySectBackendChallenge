@@ -1,17 +1,11 @@
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.parsers import BaseParser
-from rest_framework import serializers
-from django.contrib.auth.models import User
 from rest_framework import generics
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
-from rest_framework.parsers import JSONParser
-from django.conf import settings
 from server.apps.core.models import ChallengeSubmission
 from server.apps.core.models.challenge import Challenge
 from server.apps.core.serializers import NotificationSerializer
-from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
+from server.apps.core.services.AwsLambdaService import AwsLambdaService
 from server.apps.core.services.NotificationQueueService import NotificationQueueService
 
 
@@ -44,7 +38,7 @@ class ChallengeSubmissionInitView(generics.CreateAPIView):
             template = file.read()
         src_data = template.replace("###SRC###", src_data)
         input_file = challenge.input
-        zip_file = ChallengeSubmissionRunner.create_zip(input_file, src_data)
+        zip_file = AwsLambdaService.create_zip(input_file, src_data)
         return zip_file
 
     def init_challenge_submission(self, challenge_submission: ChallengeSubmission, function_name: str):
@@ -56,9 +50,7 @@ class ChallengeSubmissionInitView(generics.CreateAPIView):
         challenge: Challenge = challenge_submission.challenge
         try:
             zip_file = self.create_zip_file(challenge, challenge_submission)
-            lambda_response = ChallengeSubmissionRunner.create_lambda_function(
-                f"submission_{challenge_submission.id}", zip_file
-            )
+            lambda_response = AwsLambdaService.create_lambda_function(f"submission_{challenge_submission.id}", zip_file)
             self.init_challenge_submission(challenge_submission, lambda_response["FunctionName"])
         except Exception as e:
             challenge_submission.status = ChallengeSubmissionStatusChoices.BROKEN

@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.models import ChallengeSubmission, Challenge
 from server.apps.core.serializers import ChallengeSubmissionSerializer
-from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
+from server.apps.core.services.AwsLambdaService import AwsLambdaService
 
 
 class ChallengeSubmissionRunView(UpdateAPIView):
@@ -31,7 +31,7 @@ class ChallengeSubmissionRunView(UpdateAPIView):
         challenge_submission: ChallengeSubmission = self.get_object()
         challenge: Challenge = challenge_submission.challenge
 
-        response = ChallengeSubmissionRunner.invoke_lambda_function(
+        response = AwsLambdaService.invoke_lambda_function(
             challenge_submission.lambda_name, payload={"id": challenge_submission.id}
         )
         challenge_submission.status = ChallengeSubmissionStatusChoices.RUNNING
