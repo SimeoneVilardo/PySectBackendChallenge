@@ -146,7 +146,13 @@ REST_FRAMEWORK = {
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "https://py.sect.letz.dev"]
 
+REDIS_HOST = config("REDIS_HOST")
+REDIS_PORT = config("REDIS_PORT", cast=int)
+
+AWS_DEFAULT_REGION = config("AWS_DEFAULT_REGION")
 AWS_LAMBDA_ROLE = config("AWS_LAMBDA_ROLE")
+AWS_CHALLENGE_SUBMISSION_CREATE_TOPIC_ARN = config("AWS_CHALLENGE_SUBMISSION_CREATE_TOPIC_ARN")
+
 
 # settings.py
 # ...

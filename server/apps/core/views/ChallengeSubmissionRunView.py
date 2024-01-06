@@ -1,4 +1,3 @@
-import os
 from django.conf import settings
 from django.http import Http404
 from rest_framework.generics import UpdateAPIView
@@ -37,4 +36,5 @@ class ChallengeSubmissionRunView(UpdateAPIView):
         )
         challenge_submission.status = ChallengeSubmissionStatusChoices.RUNNING
         challenge_submission.save()
-        return Response(status=status.HTTP_202_ACCEPTED)
+        serializer = self.get_serializer(challenge_submission)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

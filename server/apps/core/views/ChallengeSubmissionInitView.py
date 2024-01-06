@@ -8,7 +8,7 @@ import redis
 from rest_framework import generics
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from rest_framework.parsers import JSONParser
-
+from django.conf import settings
 from server.apps.core.models import ChallengeSubmission
 from server.apps.core.models.challenge import Challenge
 from server.apps.core.serializers import NotificationSerializer
@@ -17,7 +17,7 @@ from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmiss
 
 class ChallengeSubmissionInitView(generics.CreateAPIView):
     serializer_class = NotificationSerializer
-    r = redis.Redis(host="pysect-backend-redis", port=6379)
+    r = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

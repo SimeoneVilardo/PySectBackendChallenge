@@ -31,7 +31,7 @@ class ChallengeSubmissionRunner:
         cls,
         function_name,
         zip_file,
-        role_name="PySectRunner",
+        role_name=settings.AWS_LAMBDA_ROLE,
         handler="lambda_function.lambda_handler",
         runtime="python3.11",
         memory_size=128,

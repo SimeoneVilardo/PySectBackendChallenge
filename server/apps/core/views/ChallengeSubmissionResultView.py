@@ -13,12 +13,14 @@ from server.apps.core.models import ChallengeSubmission, Challenge
 from server.apps.core.serializers import ChallengeSubmissionResultSerializer, ChallengeSubmissionSerializer
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
 import boto3
+import redis
 
-sqs = boto3.client("sqs", region_name="eu-north-1")
+sqs = boto3.client("sqs", region_name=settings.AWS_DEFAULT_REGION)
 
 
 class ChallengeSubmissionResultView(CreateAPIView):
     serializer_class = NotificationSerializer
+    r = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -26,13 +28,17 @@ class ChallengeSubmissionResultView(CreateAPIView):
         self.perform_create(serializer)
         return Response(status=status.HTTP_201_CREATED)
 
+    def publish_update_message(self, challenge_submission: ChallengeSubmission):
+        user: User = challenge_submission.user
+        self.r.publish(user.username, str(challenge_submission.id))
+
     def perform_create(self, serializer):
         validated_data = serializer.validated_data
         message = validated_data.get("Message")
 
         challenge_submission_id = message["challenge_submission_id"]
         try:
-            challenge_submission = ChallengeSubmission.objects.select_related("challenge").get(
+            challenge_submission = ChallengeSubmission.objects.select_related("challenge", "user").get(
                 id=challenge_submission_id
             )
         except ChallengeSubmission.DoesNotExist:
@@ -58,16 +64,5 @@ class ChallengeSubmissionResultView(CreateAPIView):
             else ChallengeSubmissionStatusChoices.FAILURE
         )
         challenge_submission.save()
-
-        response = sqs.send_message(
-            QueueUrl="https://sqs.eu-north-1.amazonaws.com/340650704585/challenge-submission-status.fifo",
-            MessageBody="status_update",
-            MessageAttributes={
-                "challenge_submission_id": {"StringValue": str(challenge_submission.id), "DataType": "String"},
-                "user_id": {"StringValue": str(challenge_submission.user.id), "DataType": "String"},
-                "status": {"StringValue": challenge_submission.status, "DataType": "String"},
-            },
-            MessageGroupId=challenge_submission.user.username,
-            MessageDeduplicationId=str(challenge_submission.id),
-        )
+        self.publish_update_message(challenge_submission)
         return Response(status=status.HTTP_200_OK)

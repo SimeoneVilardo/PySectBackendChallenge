@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
@@ -34,9 +35,9 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
         )
 
         # Publish message to SNS topic
-        sns = boto3.client("sns", region_name="eu-north-1")
+        sns = boto3.client("sns", region_name=settings.AWS_DEFAULT_REGION)
         sns.publish(
-            TopicArn="arn:aws:sns:eu-north-1:340650704585:challenge-submission-create",
+            TopicArn=settings.AWS_CHALLENGE_SUBMISSION_CREATE_TOPIC_ARN,
             Message=json.dumps({"challenge_submission_id": challenge_submission.id}),
         )
 
