@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework.parsers import BaseParser
 from rest_framework import serializers
 from django.contrib.auth.models import User
-import redis
 from rest_framework import generics
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from rest_framework.parsers import JSONParser
@@ -13,11 +12,11 @@ from server.apps.core.models import ChallengeSubmission
 from server.apps.core.models.challenge import Challenge
 from server.apps.core.serializers import NotificationSerializer
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
+from server.apps.core.services.NotificationQueueService import NotificationQueueService
 
 
 class ChallengeSubmissionInitView(generics.CreateAPIView):
     serializer_class = NotificationSerializer
-    r = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -35,11 +34,7 @@ class ChallengeSubmissionInitView(generics.CreateAPIView):
             id=challenge_submission_id
         )
         self.create_lambda_function(challenge_submission)
-        self.publish_update_message(challenge_submission)
-
-    def publish_update_message(self, challenge_submission: ChallengeSubmission):
-        user: User = challenge_submission.user
-        self.r.publish(user.username, str(challenge_submission.id))
+        NotificationQueueService.publish(challenge_submission)
 
     def create_zip_file(self, challenge: Challenge, challenge_submission: ChallengeSubmission):
         if challenge_submission.src_data is None:

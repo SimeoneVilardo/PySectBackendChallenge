@@ -13,24 +13,20 @@ from server.apps.core.models import ChallengeSubmission, Challenge
 from server.apps.core.serializers import ChallengeSubmissionResultSerializer, ChallengeSubmissionSerializer
 from server.apps.core.services.ChallengeSubmissionRunner import ChallengeSubmissionRunner
 import boto3
-import redis
+
+from server.apps.core.services.NotificationQueueService import NotificationQueueService
 
 sqs = boto3.client("sqs", region_name=settings.AWS_DEFAULT_REGION)
 
 
 class ChallengeSubmissionResultView(CreateAPIView):
     serializer_class = NotificationSerializer
-    r = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(status=status.HTTP_201_CREATED)
-
-    def publish_update_message(self, challenge_submission: ChallengeSubmission):
-        user: User = challenge_submission.user
-        self.r.publish(user.username, str(challenge_submission.id))
 
     def perform_create(self, serializer):
         validated_data = serializer.validated_data
@@ -64,5 +60,5 @@ class ChallengeSubmissionResultView(CreateAPIView):
             else ChallengeSubmissionStatusChoices.FAILURE
         )
         challenge_submission.save()
-        self.publish_update_message(challenge_submission)
+        NotificationQueueService.publish(challenge_submission)
         return Response(status=status.HTTP_200_OK)
