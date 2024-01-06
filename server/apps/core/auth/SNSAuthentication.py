@@ -6,15 +6,27 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
 from cryptography import x509
 import requests
+import re
+from urllib.parse import urlparse
 
 cache = dict()
 
 
 class SNSAuthentication(BaseAuthentication):
+    default_host_pattern = re.compile(r"^sns\.[a-zA-Z0-9\-]{3,}\.amazonaws\.com(\.cn)?$")
+
     def authenticate(self, request):
-        if not self.verify_sns_data(request.data):
+        if not self.validate_url(request.data["SigningCertURL"]) or not self.verify_sns_data(request.data):
             raise AuthenticationFailed("Invalid SNS message")
         return ("AWS_SNS", "AWS_SNS")
+
+    def validate_url(self, url_to_validate, host_pattern=None):
+        if host_pattern is None:
+            host_pattern = self.default_host_pattern
+        parsed = urlparse(url_to_validate)
+        return (
+            parsed.scheme == "https" and parsed.path.endswith(".pem") and host_pattern.match(parsed.netloc) is not None
+        )
 
     def verify_sns_data(self, messagePayload):
         if messagePayload["SignatureVersion"] != "1":
