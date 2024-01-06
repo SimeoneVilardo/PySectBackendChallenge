@@ -4,14 +4,14 @@ from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from server.apps.core.auth import CookieTokenAuthentication
 from server.apps.core.models import ChallengeSubmission
-from server.apps.core.serializers import ChallengeSubmissionStatusSerializer
+from server.apps.core.serializers import ChallengeSubmissionSerializer
 
 
-class ChallengeSubmissionStatusView(RetrieveAPIView):
+class ChallengeSubmissionView(RetrieveAPIView):
     authentication_classes = (CookieTokenAuthentication,)
     permission_classes = [IsAuthenticated]
     queryset = ChallengeSubmission.objects.all()
-    serializer_class = ChallengeSubmissionStatusSerializer
+    serializer_class = ChallengeSubmissionSerializer
     lookup_field = "id"
 
     def get(self, request, *args, **kwargs):
