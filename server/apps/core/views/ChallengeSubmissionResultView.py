@@ -24,7 +24,6 @@ class ChallengeSubmissionResultView(CreateAPIView):
     def perform_create(self, serializer):
         validated_data = serializer.validated_data
         message = validated_data.get("Message")
-        print(validated_data)
 
         challenge_submission_id = message["challenge_submission_id"]
         try:
@@ -42,7 +41,6 @@ class ChallengeSubmissionResultView(CreateAPIView):
         )
 
         if challenge_submission.error:
-            print(challenge_submission.error)
             challenge_submission.status = ChallengeSubmissionStatusChoices.FAILURE
             challenge_submission.save()
             NotificationQueueService.publish(challenge_submission)
@@ -55,8 +53,5 @@ class ChallengeSubmissionResultView(CreateAPIView):
             if challenge_output == challenge_submission.output
             else ChallengeSubmissionStatusChoices.FAILURE
         )
-        print(challenge_output)
-        print(challenge_submission.output)
-        print(challenge_submission.status)
         challenge_submission.save()
         NotificationQueueService.publish(challenge_submission)

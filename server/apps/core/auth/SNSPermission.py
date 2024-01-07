@@ -41,7 +41,6 @@ class SNSPermission(BasePermission):
             public_keySNS.verify(decoded_signature, strToSign.encode(), padding.PKCS1v15(), hashes.SHA1())
             return True
         except Exception as e:
-            print("Signature could not be verified")
             return False
 
     # Obtain the fields for signature based on message type.
