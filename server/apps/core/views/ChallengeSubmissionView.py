@@ -10,9 +10,11 @@ from server.apps.core.serializers import ChallengeSubmissionSerializer
 class ChallengeSubmissionView(RetrieveAPIView):
     authentication_classes = (CookieTokenAuthentication,)
     permission_classes = [IsAuthenticated]
-    queryset = ChallengeSubmission.objects.all()
     serializer_class = ChallengeSubmissionSerializer
     lookup_field = "id"
+
+    def get_queryset(self):
+        return ChallengeSubmission.objects.filter(user=self.request.user)
 
     def get(self, request, *args, **kwargs):
         challenge_submission = self.get_object()
