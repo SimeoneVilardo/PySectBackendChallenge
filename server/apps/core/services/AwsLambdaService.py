@@ -4,12 +4,23 @@ import zipfile
 import boto3
 import json
 from django.conf import settings
+from server.apps.core.models import ChallengeSubmission
 
 
 class AwsLambdaService:
     lambda_client = boto3.client("lambda")
     ecr_client = boto3.client("ecr")
     iam_client = boto3.client("iam")
+
+    @classmethod
+    def prepare_lambda_script(cls, challenge_submission: ChallengeSubmission) -> str:
+        if challenge_submission.src_data is None:
+            raise Exception("No src_data found in challenge submission")
+        src_data = challenge_submission.src_data
+        with open("server/apps/core/lambda/lambda_function.py", "r") as file:
+            template = file.read()
+        src_data = template.replace("###SRC###", src_data)
+        return src_data
 
     @classmethod
     def create_zip(cls, input_file, src_file):

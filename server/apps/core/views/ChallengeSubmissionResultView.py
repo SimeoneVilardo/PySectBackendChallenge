@@ -19,7 +19,7 @@ class ChallengeSubmissionResultView(CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_200_OK)
 
     def perform_create(self, serializer):
         validated_data = serializer.validated_data
@@ -44,7 +44,7 @@ class ChallengeSubmissionResultView(CreateAPIView):
             challenge_submission.status = ChallengeSubmissionStatusChoices.FAILURE
             challenge_submission.save()
             NotificationQueueService.publish(challenge_submission)
-            return Response(status=status.HTTP_200_OK)
+            return
 
         challenge: Challenge = challenge_submission.challenge
         challenge_output = challenge.output.strip().replace("\r\n", "\n").replace("\r", "\n")
@@ -55,4 +55,3 @@ class ChallengeSubmissionResultView(CreateAPIView):
         )
         challenge_submission.save()
         NotificationQueueService.publish(challenge_submission)
-        return Response(status=status.HTTP_200_OK)

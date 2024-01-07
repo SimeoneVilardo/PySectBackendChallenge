@@ -19,10 +19,9 @@ class ChallengeSubmissionInitView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_200_OK)
 
     def perform_create(self, serializer):
-        print("validated_data", serializer.validated_data)
         message = serializer.validated_data.get("Message")
         challenge_submission_id = message.get("challenge_submission_id")
         if not challenge_submission_id:
@@ -30,31 +29,27 @@ class ChallengeSubmissionInitView(generics.CreateAPIView):
         challenge_submission = ChallengeSubmission.objects.select_related("challenge", "user").get(
             id=challenge_submission_id
         )
-        self.create_lambda_function(challenge_submission)
+        try:
+            lambda_response = self.create_lambda_function(challenge_submission)
+            self.init_challenge_submission(challenge_submission, lambda_response["FunctionName"])
+        except Exception as e:
+            self.abort_challenge_submission(challenge_submission)
+            return
         NotificationQueueService.publish(challenge_submission)
 
-    def create_zip_file(self, challenge: Challenge, challenge_submission: ChallengeSubmission):
-        if challenge_submission.src_data is None:
-            raise Exception("No src_data found in challenge submission")
-        src_data = challenge_submission.src_data
-        with open("server/apps/core/lambda/lambda_function.py", "r") as file:
-            template = file.read()
-        src_data = template.replace("###SRC###", src_data)
+    def create_lambda_function(self, challenge_submission: ChallengeSubmission):
+        challenge: Challenge = challenge_submission.challenge
         input_file = challenge.input
+        src_data = AwsLambdaService.prepare_lambda_script(challenge_submission)
         zip_file = AwsLambdaService.create_zip(input_file, src_data)
-        return zip_file
+        lambda_response = AwsLambdaService.create_lambda_function(f"submission_{challenge_submission.id}", zip_file)
+        return lambda_response
+
+    def abort_challenge_submission(self, challenge_submission: ChallengeSubmission):
+        challenge_submission.status = ChallengeSubmissionStatusChoices.BROKEN
+        challenge_submission.save()
 
     def init_challenge_submission(self, challenge_submission: ChallengeSubmission, function_name: str):
         challenge_submission.lambda_name = function_name
         challenge_submission.status = ChallengeSubmissionStatusChoices.READY
         challenge_submission.save()
-
-    def create_lambda_function(self, challenge_submission: ChallengeSubmission):
-        challenge: Challenge = challenge_submission.challenge
-        try:
-            zip_file = self.create_zip_file(challenge, challenge_submission)
-            lambda_response = AwsLambdaService.create_lambda_function(f"submission_{challenge_submission.id}", zip_file)
-            self.init_challenge_submission(challenge_submission, lambda_response["FunctionName"])
-        except Exception as e:
-            challenge_submission.status = ChallengeSubmissionStatusChoices.BROKEN
-            challenge_submission.save()
