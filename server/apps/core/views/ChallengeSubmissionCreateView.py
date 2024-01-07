@@ -48,10 +48,16 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
         if not file_obj.name.endswith(".py"):
             raise serializers.ValidationError({"error": "The file is not a Python file"})
         try:
-            ast.parse(file_obj.read().decode())
+            file_str = file_obj.read().decode("utf-8")
             file_obj.seek(0)
-        except SyntaxError:
+        except Exception as e:
+            raise serializers.ValidationError({"error": "The file does not contain valid UTF-8 data"})
+        try:
+            ast.parse(file_str)
+        except Exception as e:
             raise serializers.ValidationError({"error": "The file does not contain valid Python code"})
+        if file_str.find("def main():") == -1:
+            raise serializers.ValidationError({"error": "The file does not contain a main function"})
         return True
 
     def create_challenge_submission(self, challenge: Challenge, user: User, file_obj: File) -> ChallengeSubmission:

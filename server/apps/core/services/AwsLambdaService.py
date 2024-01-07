@@ -1,4 +1,4 @@
-import time
+import ast
 import io
 import zipfile
 import boto3
@@ -23,7 +23,15 @@ class AwsLambdaService:
         return src_data
 
     @classmethod
-    def create_zip(cls, input_file, src_file):
+    def validate_lambda_script(cls, src_file: str) -> bool:
+        try:
+            ast.parse(src_file)
+        except Exception as e:
+            return False
+        return True
+
+    @classmethod
+    def create_zip(cls, input_file: str, src_file: str) -> io.BytesIO:
         in_memory_zip = io.BytesIO()
         with zipfile.ZipFile(in_memory_zip, mode="w", compression=zipfile.ZIP_DEFLATED) as zipf:
             input_info = zipfile.ZipInfo("input.json")

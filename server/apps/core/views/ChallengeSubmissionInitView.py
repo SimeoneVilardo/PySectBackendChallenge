@@ -41,6 +41,9 @@ class ChallengeSubmissionInitView(generics.CreateAPIView):
         challenge: Challenge = challenge_submission.challenge
         input_file = challenge.input
         src_data = AwsLambdaService.prepare_lambda_script(challenge_submission)
+        is_valid_src_data = AwsLambdaService.validate_lambda_script(src_data)
+        if not is_valid_src_data:
+            raise Exception("Invalid src_data")
         zip_file = AwsLambdaService.create_zip(input_file, src_data)
         lambda_response = AwsLambdaService.create_lambda_function(f"submission_{challenge_submission.id}", zip_file)
         return lambda_response
