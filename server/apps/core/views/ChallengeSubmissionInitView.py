@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
@@ -30,8 +31,8 @@ class ChallengeSubmissionInitView(generics.CreateAPIView):
             id=challenge_submission_id
         )
         try:
-            lambda_response = self.create_lambda_function(challenge_submission)
-            self.init_challenge_submission(challenge_submission, lambda_response["FunctionName"])
+            lambda_function_name = self.create_lambda_function(challenge_submission)
+            self.init_challenge_submission(challenge_submission, lambda_function_name)
         except Exception as e:
             self.abort_challenge_submission(challenge_submission)
             return
@@ -45,8 +46,14 @@ class ChallengeSubmissionInitView(generics.CreateAPIView):
         if not is_valid_src_data:
             raise Exception("Invalid src_data")
         zip_file = AwsLambdaService.create_zip(input_file, src_data)
-        lambda_response = AwsLambdaService.create_lambda_function(f"submission_{challenge_submission.id}", zip_file)
-        return lambda_response
+        env_vars = {
+            "CHALLENGE_SUBMISSION_ID": str(challenge_submission.id),
+            "AWS_CHALLENGE_SUBMISSION_RESULT_TOPIC_ARN": settings.AWS_CHALLENGE_SUBMISSION_RESULT_TOPIC_ARN,
+        }
+        lambda_function_name = f"submission_{challenge_submission.id}"
+        AwsLambdaService.create_lambda_function(lambda_function_name, zip_file, env_vars=env_vars)
+        AwsLambdaService.wait_for_function_active(lambda_function_name)
+        return lambda_function_name
 
     def abort_challenge_submission(self, challenge_submission: ChallengeSubmission):
         challenge_submission.status = ChallengeSubmissionStatusChoices.BROKEN

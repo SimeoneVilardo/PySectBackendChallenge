@@ -3,6 +3,7 @@ import io
 import zipfile
 import boto3
 import json
+import time
 from django.conf import settings
 from server.apps.core.models import ChallengeSubmission
 
@@ -54,7 +55,8 @@ class AwsLambdaService:
         handler="lambda_function.lambda_handler",
         runtime="python3.11",
         memory_size=128,
-        timeout=30,
+        timeout=10,
+        env_vars=dict(),
     ):
         role = cls.iam_client.get_role(RoleName=role_name)
         response = cls.lambda_client.create_function(
@@ -67,13 +69,21 @@ class AwsLambdaService:
             },
             MemorySize=memory_size,
             Timeout=timeout,
-            Environment={
-                "Variables": {
-                    "PYSECT_BACKEND_API_KEY": "xxx",
-                }
-            },
+            Environment={"Variables": env_vars},
         )
         return response
+
+    @classmethod
+    def wait_for_function_active(cls, function_name, timeout=30, interval=2):
+        start_time = time.time()
+        while True:
+            response = cls.lambda_client.get_function(FunctionName=function_name)
+            status = response["Configuration"]["State"]
+            if status == "Active":
+                break
+            elif time.time() - start_time > timeout:
+                raise Exception("Timeout while waiting for function to become active")
+            time.sleep(interval)
 
     @classmethod
     def invoke_lambda_function(cls, function_name, payload=dict()):

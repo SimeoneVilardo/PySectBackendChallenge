@@ -1,10 +1,10 @@
 import builtins
 import sys
 import json
-from io import StringIO
-import urllib.request
 import traceback
 import boto3
+import os
+from io import StringIO
 
 with open("input.json") as input_file:
     parsed_input_list = json.load(input_file)
@@ -21,11 +21,14 @@ def fake_input(prompt=""):
 builtins.input = fake_input
 
 
-def notify_result(challenge_submission_id, output=None, error=None):
+def notify_result(output=None, error=None):
+    topic_arn = os.environ.get("AWS_CHALLENGE_SUBMISSION_RESULT_TOPIC_ARN")
+    region_name = os.environ.get("AWS_REGION")
+    challenge_submission_id = os.environ.get("CHALLENGE_SUBMISSION_ID")
     data = {"output": output, "error": error, "challenge_submission_id": challenge_submission_id}
-    sns = boto3.client("sns", region_name="eu-north-1")
+    sns = boto3.client("sns", region_name=region_name)
     sns.publish(
-        TopicArn="arn:aws:sns:eu-north-1:340650704585:challenge-submission-result",
+        TopicArn=topic_arn,
         Message=json.dumps(data),
     )
 
@@ -34,7 +37,6 @@ def notify_result(challenge_submission_id, output=None, error=None):
 
 
 def lambda_handler(event, context):
-    challenge_submission_id = event["id"]
     original_stdout = sys.stdout
     sys.stdout = StringIO()
     error = None
@@ -54,4 +56,4 @@ def lambda_handler(event, context):
     if not output:
         output = None
     sys.stdout = original_stdout
-    notify_result(challenge_submission_id, output, error)
+    notify_result(output, error)
