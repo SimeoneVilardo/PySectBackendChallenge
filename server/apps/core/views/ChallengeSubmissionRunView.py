@@ -31,9 +31,8 @@ class ChallengeSubmissionRunView(UpdateAPIView):
 
     def partial_update(self, request, *args, **kwargs):
         challenge_submission: ChallengeSubmission = self.get_object()
-        response = AwsLambdaService.invoke_lambda_function(
-            challenge_submission.lambda_name, payload={"id": challenge_submission.id}
-        )
+        response = AwsLambdaService.invoke_lambda_function(challenge_submission.lambda_name)
+        # TODO: check lambda started successfully
         challenge_submission.status = ChallengeSubmissionStatusChoices.RUNNING
         challenge_submission.save()
         serializer = self.get_serializer(challenge_submission)
