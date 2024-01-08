@@ -142,6 +142,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "server.apps.core.auth.BearerTokenAuthentication",
     ],
+    "EXCEPTION_HANDLER": "server.common.exception_handler.custom_exception_handler",
 }
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "https://py.sect.letz.dev"]
