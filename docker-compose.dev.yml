@@ -18,9 +18,6 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - nginx-reverse-proxy-net
-    ports:
-      # We only bind ports directly in development
-      - "9001:5432"
     env_file:
       - ./docker/config/.env
 
@@ -33,9 +30,6 @@ services:
   web-dev:
     image: "pysect-dev-backend"
     container_name: pysect-dev-backend-core
-    ports:
-      # We only bind ports directly in development:
-      - "9000:8000"
     #platform: linux/amd64
     build:
       target: builder_image
