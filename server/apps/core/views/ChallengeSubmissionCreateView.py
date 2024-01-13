@@ -55,8 +55,6 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
             ast.parse(file_str)
         except Exception as e:
             raise serializers.ValidationError({"error": "The file does not contain valid Python code"})
-        if file_str.find("def main():") == -1:
-            raise serializers.ValidationError({"error": "The file does not contain a main function"})
         return True
 
     def create_challenge_submission(self, challenge: Challenge, user: User, file_obj: File) -> ChallengeSubmission:
