@@ -10,7 +10,7 @@
 version: "3.9"
 services:
 
-  db:
+  db-dev:
     image: "postgres:13.10-alpine"
     container_name: pysect-dev-backend-db
     restart: unless-stopped
@@ -24,14 +24,14 @@ services:
     env_file:
       - ./docker/config/.env
 
-  redis:
+  redis-dev:
     image: redis:latest
     container_name: pysect-dev-backend-redis
     networks:
       - nginx-reverse-proxy-net
 
-  web:
-    image: "pysect-backend:dev"
+  web-dev:
+    image: "pysect-dev-backend"
     container_name: pysect-dev-backend-core
     ports:
       # We only bind ports directly in development:
@@ -46,17 +46,13 @@ services:
         # See: https://github.com/wemake-services/wemake-django-template/issues/1518
         USER_ID: ${UID:-1000}
         USER_GID: ${GID:-1000}
-      cache_from:
-        - "pysect-backend:dev"
-        - "pysect-backend:latest"
-        - "*"
     volumes:
       - django-static:/var/www/django/static
       - /home/pi/pysect-logs:/var/www/log
       # We should only mount source code in development:
       - .:/code
     depends_on:
-      - db
+      - db-dev
     networks:
       - nginx-reverse-proxy-net
     env_file:
