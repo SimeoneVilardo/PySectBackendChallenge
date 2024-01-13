@@ -33,7 +33,7 @@ services:
       context: .
       dockerfile: ./docker/django/Dockerfile
       args:
-        DJANGO_ENV: development
+        DJANGO_ENV: local
         # See: https://github.com/wemake-services/wemake-django-template/issues/1518
         USER_ID: ${UID:-1000}
         USER_GID: ${GID:-1000}
