@@ -10,7 +10,7 @@ services:
     networks:
       - nginx-reverse-proxy-net
     env_file:
-      - ./docker/config/.env
+      - ./docker/config/.env.dev
 
   redis-dev:
     image: redis:latest
@@ -41,7 +41,7 @@ services:
     networks:
       - nginx-reverse-proxy-net
     env_file:
-      - ./docker/config/.env
+      - ./docker/config/.env.dev
     environment:
       VIRTUAL_HOST: py.sect.test.letz.dev
       VIRTUAL_PATH: ~^/(api|static)/
