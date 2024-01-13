@@ -1,41 +1,26 @@
----
-
-# Default compose file for development and production.
-# Should be used directly in development.
-# Automatically loads `docker-compose.override.yml` if it exists.
-# No extra steps required.
-# Should be used together with `docker/docker-compose.prod.yml`
-# in production.
-
 version: "3.9"
 services:
 
-  db:
+  db-prd:
     image: "postgres:13.10-alpine"
-    container_name: pysect-backend-db
+    container_name: pysect-backend-db-prd
     restart: unless-stopped
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
       - nginx-reverse-proxy-net
-    ports:
-      # We only bind ports directly in development
-      - "9001:5432"
     env_file:
       - ./docker/config/.env
 
-  redis:
+  redis-prd:
     image: redis:latest
-    container_name: pysect-backend-redis
+    container_name: pysect-backend-redis-prd
     networks:
       - nginx-reverse-proxy-net
 
-  web:
-    image: "pysect-backend:dev"
-    container_name: pysect-backend-web
-    ports:
-      # We only bind ports directly in development:
-      - "9000:8000"
+  web-prd:
+    image: "pysect-backend-challenge-prd"
+    container_name: pysect-backend-challenge-prd
     #platform: linux/amd64
     build:
       target: builder_image
@@ -46,17 +31,13 @@ services:
         # See: https://github.com/wemake-services/wemake-django-template/issues/1518
         USER_ID: ${UID:-1000}
         USER_GID: ${GID:-1000}
-      cache_from:
-        - "pysect-backend:dev"
-        - "pysect-backend:latest"
-        - "*"
     volumes:
       - django-static:/var/www/django/static
       - /home/pi/pysect-logs:/var/www/log
       # We should only mount source code in development:
       - .:/code
     depends_on:
-      - db
+      - db-prd
     networks:
       - nginx-reverse-proxy-net
     env_file:
@@ -68,7 +49,6 @@ services:
     command: ./docker/django/local_run.sh
 
 networks:
-  # Network for your internals, use it by default:
   nginx-reverse-proxy-net:
     external: true
 

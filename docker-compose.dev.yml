@@ -1,18 +1,9 @@
----
-
-# Default compose file for development and production.
-# Should be used directly in development.
-# Automatically loads `docker-compose.override.yml` if it exists.
-# No extra steps required.
-# Should be used together with `docker/docker-compose.prod.yml`
-# in production.
-
 version: "3.9"
 services:
 
   db-dev:
     image: "postgres:13.10-alpine"
-    container_name: pysect-dev-backend-db
+    container_name: pysect-backend-db-dev
     restart: unless-stopped
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -23,13 +14,13 @@ services:
 
   redis-dev:
     image: redis:latest
-    container_name: pysect-dev-backend-redis
+    container_name: pysect-backend-redis-dev
     networks:
       - nginx-reverse-proxy-net
 
   web-dev:
-    image: "pysect-dev-backend"
-    container_name: pysect-dev-backend-core
+    image: "pysect-backend-challenge-dev"
+    container_name: pysect-backend-challenge-dev
     #platform: linux/amd64
     build:
       target: builder_image
@@ -58,7 +49,6 @@ services:
     command: ./docker/django/local_run.sh
 
 networks:
-  # Network for your internals, use it by default:
   nginx-reverse-proxy-net:
     external: true
 
