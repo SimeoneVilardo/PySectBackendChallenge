@@ -1,8 +1,5 @@
 from django.contrib.auth.models import User
-from django.db import models, IntegrityError
-from django.core.exceptions import ValidationError
-from django.contrib.postgres.fields import ArrayField
-
+from django.db import models
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
 
 

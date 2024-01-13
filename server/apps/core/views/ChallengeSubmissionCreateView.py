@@ -11,10 +11,9 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from server.apps.core.auth import CookieTokenAuthentication
+from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.models import Challenge, ChallengeSubmission
 from server.apps.core.serializers import ChallengeSubmissionSerializer
-
-from server.apps.core.services.SNSService import SNSService
 
 
 class ChallengeSubmissionCreateView(generics.CreateAPIView):
@@ -33,7 +32,7 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
         challenge_submission: ChallengeSubmission = self.create_challenge_submission(challenge, request.user, file_obj)
 
         # Publish message to SNS topic
-        SNSService.publish_submission_create({"challenge_submission_id": challenge_submission.id})
+        # SNSService.publish_submission_create({"challenge_submission_id": challenge_submission.id})
 
         serializer = self.get_serializer(challenge_submission)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -61,7 +60,12 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
         return True
 
     def create_challenge_submission(self, challenge: Challenge, user: User, file_obj: File) -> ChallengeSubmission:
-        challenge_submission = {"challenge": challenge.id, "user": user.id, "src_data": file_obj.read().decode("utf-8")}
+        challenge_submission = {
+            "challenge": challenge.id,
+            "user": user.id,
+            "src_data": file_obj.read().decode("utf-8"),
+            "status": ChallengeSubmissionStatusChoices.READY,
+        }
         serializer = ChallengeSubmissionSerializer(data=challenge_submission)
         serializer.is_valid(raise_exception=True)
         try:

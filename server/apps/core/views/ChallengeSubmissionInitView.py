@@ -7,7 +7,6 @@ from server.apps.core.choices import ChallengeSubmissionStatusChoices
 from server.apps.core.models import ChallengeSubmission
 from server.apps.core.models.challenge import Challenge
 from server.apps.core.serializers import NotificationSerializer
-from server.apps.core.services.AwsLambdaService import AwsLambdaService
 from server.apps.core.services.NotificationQueueService import NotificationQueueService
 
 
@@ -37,23 +36,6 @@ class ChallengeSubmissionInitView(generics.CreateAPIView):
             self.abort_challenge_submission(challenge_submission)
             return
         NotificationQueueService.publish(challenge_submission)
-
-    def create_lambda_function(self, challenge_submission: ChallengeSubmission):
-        challenge: Challenge = challenge_submission.challenge
-        input_file = challenge.input
-        src_data = AwsLambdaService.prepare_lambda_script(challenge_submission)
-        is_valid_src_data = AwsLambdaService.validate_lambda_script(src_data)
-        if not is_valid_src_data:
-            raise Exception("Invalid src_data")
-        zip_file = AwsLambdaService.create_zip(input_file, src_data)
-        env_vars = {
-            "CHALLENGE_SUBMISSION_ID": str(challenge_submission.id),
-            "AWS_CHALLENGE_SUBMISSION_RESULT_TOPIC_ARN": settings.AWS_CHALLENGE_SUBMISSION_RESULT_TOPIC_ARN,
-        }
-        lambda_function_name = f"submission_{challenge_submission.id}"
-        AwsLambdaService.create_lambda_function(lambda_function_name, zip_file, env_vars=env_vars)
-        AwsLambdaService.wait_for_function_active(lambda_function_name)
-        return lambda_function_name
 
     def abort_challenge_submission(self, challenge_submission: ChallengeSubmission):
         challenge_submission.status = ChallengeSubmissionStatusChoices.BROKEN
