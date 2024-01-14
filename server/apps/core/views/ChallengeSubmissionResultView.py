@@ -48,10 +48,10 @@ class ChallengeSubmissionResultView(CreateAPIView):
 
         challenge: Challenge = challenge_submission.challenge
         challenge_output = challenge.output.strip().replace("\r\n", "\n").replace("\r", "\n")
-        challenge_submission.status = (
-            ChallengeSubmissionStatusChoices.SUCCESS
-            if challenge_output == challenge_submission.output
-            else ChallengeSubmissionStatusChoices.FAILURE
-        )
+        if challenge_output == challenge_submission.output:
+            challenge_submission.status = ChallengeSubmissionStatusChoices.SUCCESS
+        else:
+            challenge_submission.status = ChallengeSubmissionStatusChoices.FAILURE
+            challenge_submission.error = "Output did not match"
         challenge_submission.save()
         NotificationQueueService.publish(challenge_submission)
