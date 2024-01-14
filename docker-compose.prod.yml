@@ -1,9 +1,9 @@
 version: "3.9"
 services:
 
-  db-prd:
+  db-prod:
     image: "postgres:13.10-alpine"
-    container_name: pysect-backend-db-prd
+    container_name: pysect-backend-db-prod
     restart: unless-stopped
     volumes:
       - pgdata-prod:/var/lib/postgresql/data
@@ -12,15 +12,15 @@ services:
     env_file:
       - ./docker/config/.env.prod
 
-  redis-prd:
+  redis-prod:
     image: redis:latest
-    container_name: pysect-backend-redis-prd
+    container_name: pysect-backend-redis-prod
     networks:
       - nginx-reverse-proxy-net
 
-  web-prd:
-    image: "pysect-backend-challenge-prd"
-    container_name: pysect-backend-challenge-prd
+  web-prod:
+    image: "pysect-backend-challenge-prod"
+    container_name: pysect-backend-challenge-prod
     #platform: linux/amd64
     build:
       target: builder_image
@@ -36,7 +36,7 @@ services:
       # We should only mount source code in development:
       - .:/code
     depends_on:
-      - db-prd
+      - db-prod
     networks:
       - nginx-reverse-proxy-net
     env_file:
