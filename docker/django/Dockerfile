@@ -6,16 +6,12 @@ FROM python:3.11-bullseye AS builder_image
 LABEL maintainer="simeone.vilardo@gmail.com"
 LABEL vendor="PySect"
 
-ARG DJANGO_ENV
-
 # user args
 ARG USER=web
 ARG USER_ID=1000
 ARG USER_GID=1000
 
-ENV DJANGO_ENV=${DJANGO_ENV} \
-  # python:
-  PYTHONFAULTHANDLER=1 \
+ENV PYTHONFAULTHANDLER=1 \
   PYTHONUNBUFFERED=1 \
   PYTHONHASHSEED=random \
   PYTHONDONTWRITEBYTECODE=1
@@ -42,15 +38,12 @@ RUN echo "source /opt/django/pypkgs/bin/activate" >> /root/.bashrc
 # Cleanup with a new stage:
 FROM python:3.11-bullseye as runner_image
 
-ARG DJANGO_ENV
-
 # user args
 ARG USER=web
 ARG USER_ID=1000
 ARG USER_GID=1000
 
-ENV DJANGO_ENV=${DJANGO_ENV} \
-  PYTHONFAULTHANDLER=1 \
+ENV PYTHONFAULTHANDLER=1 \
   PYTHONUNBUFFERED=1 \
   PYTHONHASHSEED=random \
   PYTHONDONTWRITEBYTECODE=1

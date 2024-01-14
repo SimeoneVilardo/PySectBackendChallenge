@@ -31,7 +31,7 @@ class ChallengeSubmissionRunView(UpdateAPIView):
     def partial_update(self, request, *args, **kwargs):
         challenge_submission: ChallengeSubmission = self.get_object()
         input_payload = self.create_input_payload(challenge_submission)
-        sfn_name = f"challenge-submission-{challenge_submission.id}"
+        sfn_name = f"challenge-submission-{challenge_submission.id}-{settings.DJANGO_ENV}"
         response = AwsStepFunctionService.invoke_step_function(sfn_name, input_payload)
         challenge_submission.status = ChallengeSubmissionStatusChoices.RUNNING
         challenge_submission.save()

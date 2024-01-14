@@ -25,15 +25,9 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         challenge: Challenge = get_object_or_404(Challenge, id=kwargs["id"])
-
         file_obj: File = request.data.get("file")
         self.is_valid_python_file(file_obj)
-
         challenge_submission: ChallengeSubmission = self.create_challenge_submission(challenge, request.user, file_obj)
-
-        # Publish message to SNS topic
-        # SNSService.publish_submission_create({"challenge_submission_id": challenge_submission.id})
-
         serializer = self.get_serializer(challenge_submission)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
