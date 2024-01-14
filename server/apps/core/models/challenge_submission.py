@@ -16,14 +16,13 @@ class ChallengeSubmission(models.Model):
         on_delete=models.CASCADE,
         db_index=True,
     )
-    lambda_name = models.CharField(max_length=255, blank=True, null=True)
     src_data = models.TextField(blank=True, null=True)
     output = models.TextField(blank=True, null=True)
     error = models.TextField(blank=True, null=True)
     status = models.CharField(
         max_length=100,
         choices=ChallengeSubmissionStatusChoices.choices,
-        default=ChallengeSubmissionStatusChoices.NOT_READY,
+        default=ChallengeSubmissionStatusChoices.READY,
     )
     memory = models.IntegerField(null=True, blank=True)
     time = models.IntegerField(null=True, blank=True)

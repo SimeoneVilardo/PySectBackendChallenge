@@ -52,12 +52,7 @@ class ChallengeSubmissionCreateView(generics.CreateAPIView):
         return True
 
     def create_challenge_submission(self, challenge: Challenge, user: User, file_obj: File) -> ChallengeSubmission:
-        challenge_submission = {
-            "challenge": challenge.id,
-            "user": user.id,
-            "src_data": file_obj.read().decode("utf-8"),
-            "status": ChallengeSubmissionStatusChoices.READY,
-        }
+        challenge_submission = {"challenge": challenge.id, "user": user.id, "src_data": file_obj.read().decode("utf-8")}
         serializer = ChallengeSubmissionSerializer(data=challenge_submission)
         serializer.is_valid(raise_exception=True)
         try:
