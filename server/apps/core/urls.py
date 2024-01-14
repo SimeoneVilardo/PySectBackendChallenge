@@ -7,7 +7,6 @@ from server.apps.core.views.HealthView import HealthView
 from server.apps.core.views.ChallengeSubmissionRunView import ChallengeSubmissionRunView
 from server.apps.core.views.ChallengeView import ChallengeView
 from server.apps.core.views.ChallengeSubmissionCreateView import ChallengeSubmissionCreateView
-from server.apps.core.views.ChallengeSubmissionInitView import ChallengeSubmissionInitView
 from server.apps.core.views.LoginView import LoginView
 from server.apps.core.views.LogoutView import LogoutView
 from server.common.views import create_dispatcher_view
@@ -29,7 +28,6 @@ urlpatterns = [
         ),
         name="challenge_submission_api",
     ),
-    path("challenge-submission/init/", ChallengeSubmissionInitView.as_view(), name="challenge_submission_init_api"),
     path(
         "challenge-submission/<int:id>/run/", ChallengeSubmissionRunView.as_view(), name="challenge_submission_run_api"
     ),
