@@ -7,7 +7,7 @@ from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated
 from server.apps.core.auth import CookieTokenAuthentication
 from server.apps.core.choices import ChallengeSubmissionStatusChoices
-from server.apps.core.models import ChallengeSubmission, Challenge
+from server.apps.core.models import ChallengeSubmission
 from server.apps.core.serializers import ChallengeSubmissionSerializer
 from server.apps.core.services.AwsStepFunctionService import AwsStepFunctionService
 

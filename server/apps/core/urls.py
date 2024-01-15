@@ -1,5 +1,4 @@
 from django.urls import path
-from rest_framework.authtoken.views import obtain_auth_token
 from server.apps.core.views.AuthView import AuthView
 from server.apps.core.views.ChallengeSubmissionResultView import ChallengeSubmissionResultView
 from server.apps.core.views.ChallengeSubmissionView import ChallengeSubmissionView

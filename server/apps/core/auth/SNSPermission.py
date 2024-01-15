@@ -1,13 +1,11 @@
-from rest_framework.authentication import BaseAuthentication
 from rest_framework.permissions import BasePermission
-from rest_framework.exceptions import AuthenticationFailed
-import base64
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
 from cryptography import x509
 import requests
 import re
+import base64
 from urllib.parse import urlparse
 
 cache = dict()
