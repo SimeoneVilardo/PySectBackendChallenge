@@ -18,3 +18,4 @@ djangorestframework-api-key==3.0.0
 requests==2.31.0
 cryptography==41.0.7
 django-request-logging==0.7.5
+django-filter==23.5
