@@ -1,29 +1,43 @@
 from django.urls import path
 from server.apps.core.views.AuthView import AuthView
-from server.apps.core.views.ChallengeSubmissionResultView import ChallengeSubmissionResultView
-from server.apps.core.views.ChallengeSubmissionView import ChallengeSubmissionView
+from server.apps.core.views.SubmissionResultView import SubmissionResultView
+from server.apps.core.views.SubmissionView import SubmissionView
 from server.apps.core.views.HealthView import HealthView
-from server.apps.core.views.ChallengeSubmissionRunView import ChallengeSubmissionRunView
+from server.apps.core.views.SubmissionRunView import SubmissionRunView
 from server.apps.core.views.ChallengeView import ChallengeView
 from server.apps.core.views.LoginView import LoginView
 from server.apps.core.views.LogoutView import LogoutView
 from server.common.views import create_dispatcher_view
 
 urlpatterns = [
+    # Utils
     path("health/", HealthView.as_view(), name="dummy_api"),
+    # Auth
     path("me/", AuthView.as_view(), name="me_api"),
     path("login/", LoginView.as_view(), name="login_api"),
     path("logout/", LogoutView.as_view(), name="logout_api"),
-    path("challenges/", ChallengeView.as_view(), name="challenge_list_api"),
-    path("challenges/<int:id>/", ChallengeView.as_view(), name="challenge_retreive_api"),
-    path("challenge-submission/<int:id>/", ChallengeSubmissionView.as_view(), name="challenge_submission_api"),
-    path("challenge-submission/", ChallengeSubmissionView.as_view(), name="challenge_submissions_api"),
+    # Challenges
+    path("challenges/", ChallengeView.as_view(), name="challenges_api"),
+    path("challenges/<int:id>/", ChallengeView.as_view(), name="challenge_api"),
+    # Submissions
     path(
-        "challenge-submission/<int:id>/run/", ChallengeSubmissionRunView.as_view(), name="challenge_submission_run_api"
+        "challenges/<int:challenge_id>/submissions/",
+        SubmissionView.as_view(),
+        name="submissions_api",
+    ),
+    path(
+        "challenges/<int:challenge_id>/submissions/<int:id>/",
+        SubmissionView.as_view(),
+        name="submission_api",
+    ),
+    path(
+        "challenges/submissions/<int:id>/run/",
+        SubmissionRunView.as_view(),
+        name="submissions_run_api",
     ),
     path(
         "challenge-submission/result/",
-        ChallengeSubmissionResultView.as_view(),
-        name="challenge_submission_result_api",
+        SubmissionResultView.as_view(),
+        name="submissions_result_api",
     ),
 ]

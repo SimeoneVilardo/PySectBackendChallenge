@@ -1,18 +1,18 @@
 from django.contrib.auth.models import User
 from django.db import models
-from server.apps.core.choices import ChallengeSubmissionStatusChoices
+from server.apps.core.choices import SubmissionStatusChoices
 
 
-class ChallengeSubmission(models.Model):
+class Submission(models.Model):
     challenge = models.ForeignKey(
         "Challenge",
-        related_name="challenge_submissions",
+        related_name="submissions",
         on_delete=models.CASCADE,
         db_index=True,
     )
     user = models.ForeignKey(
         User,
-        related_name="challenge_submissions",
+        related_name="submissions",
         on_delete=models.CASCADE,
         db_index=True,
     )
@@ -21,34 +21,16 @@ class ChallengeSubmission(models.Model):
     error = models.TextField(blank=True, null=True)
     status = models.CharField(
         max_length=100,
-        choices=ChallengeSubmissionStatusChoices.choices,
-        default=ChallengeSubmissionStatusChoices.READY,
+        choices=SubmissionStatusChoices.choices,
+        default=SubmissionStatusChoices.READY,
     )
     memory = models.IntegerField(null=True, blank=True)
     time = models.IntegerField(null=True, blank=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
-    """
-    def clean(self):
-        # Check if the status is 'SUCCESS' before enforcing the unique constraint
-        if self.status == ChallengeSubmissionStatusChoices.SUCCESS:
-            existing_submissions = ChallengeSubmission.objects.filter(
-                challenge=self.challenge,
-                user=self.user,
-                status=ChallengeSubmissionStatusChoices.SUCCESS,
-            ).exclude(pk=self.pk)
-
-            if existing_submissions.exists():
-                raise ValidationError(
-                    {'status': 'There is already a successful submission for this user and challenge.'}
-                )
-
-        super().clean()
-    """
-
     class Meta:
-        db_table = "challenge_submissions"
+        db_table = "submissions"
 
         verbose_name = "python challenge submission"
         verbose_name_plural = "python challenge submissions"

@@ -1,5 +1,5 @@
 from .ChallengeSerializer import ChallengeSerializer
-from .ChallengeSubmissionSerializer import ChallengeSubmissionSerializer
-from .ChallengeSubmissionResultSerializer import ChallengeSubmissionResultSerializer
+from .SubmissionSerializer import SubmissionSerializer
+from .SubmissionResultSerializer import SubmissionResultSerializer
 from .NotificationSerializer import NotificationSerializer
 from .UserSerializer import UserSerializer

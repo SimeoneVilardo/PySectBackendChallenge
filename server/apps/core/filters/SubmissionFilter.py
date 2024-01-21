@@ -1,8 +1,8 @@
-from server.apps.core.models import ChallengeSubmission
+from server.apps.core.models import Submission
 from django_filters import OrderingFilter, FilterSet
 
 
-class ChallengeSubmissionFilter(FilterSet):
+class SubmissionFilter(FilterSet):
     sort = OrderingFilter(
         fields=(
             ("id", "id"),

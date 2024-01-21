@@ -9,27 +9,29 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateModelMixin
 from server.apps.core.auth import CookieTokenAuthentication
-from server.apps.core.models import Challenge, ChallengeSubmission
-from server.apps.core.serializers import ChallengeSubmissionSerializer
-from server.apps.core.filters.ChallengeSubmissionFilter import ChallengeSubmissionFilter
+from server.apps.core.models import Challenge, Submission
+from server.apps.core.serializers import SubmissionSerializer
+from server.apps.core.filters.SubmissionFilter import SubmissionFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 
-class ChallengeSubmissionView(GenericAPIView, CreateModelMixin, ListModelMixin, RetrieveModelMixin):
+class SubmissionView(ListCreateAPIView, RetrieveAPIView):
     authentication_classes = (CookieTokenAuthentication,)
     permission_classes = (IsAuthenticated,)
-    queryset = ChallengeSubmission.objects.all()
+    queryset = Submission.objects.all()
     parser_classes = (MultiPartParser,)
-    serializer_class = ChallengeSubmissionSerializer
+    serializer_class = SubmissionSerializer
     lookup_field = "id"
     filter_backends = [DjangoFilterBackend]
-    filterset_class = ChallengeSubmissionFilter
+    filterset_class = SubmissionFilter
 
     def get_queryset(self):
-        return ChallengeSubmission.objects.filter(user=self.request.user)
+        challenge_id = self.kwargs.get("challenge_id")
+        qs = Submission.objects.filter(user=self.request.user, challenge_id=challenge_id)
+        return qs
 
     def get(self, request, *args, **kwargs):
         if "id" in kwargs:
@@ -38,11 +40,11 @@ class ChallengeSubmissionView(GenericAPIView, CreateModelMixin, ListModelMixin, 
             return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        challenge: Challenge = get_object_or_404(Challenge, id=kwargs["id"])
+        challenge: Challenge = get_object_or_404(Challenge, id=kwargs["challenge_id"])
         file_obj: File = request.data.get("file")
         self.is_valid_python_file(file_obj)
-        challenge_submission: ChallengeSubmission = self.create_challenge_submission(challenge, request.user, file_obj)
-        serializer = self.get_serializer(challenge_submission)
+        submission: Submission = self.create_submission(challenge, request.user, file_obj)
+        serializer = self.get_serializer(submission)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def is_valid_python_file(self, file_obj: File):
@@ -65,12 +67,12 @@ class ChallengeSubmissionView(GenericAPIView, CreateModelMixin, ListModelMixin, 
             raise serializers.ValidationError({"error": "The file does not contain valid Python code"})
         return True
 
-    def create_challenge_submission(self, challenge: Challenge, user: User, file_obj: File) -> ChallengeSubmission:
-        challenge_submission = {"challenge": challenge.id, "user": user.id, "src_data": file_obj.read().decode("utf-8")}
-        serializer = ChallengeSubmissionSerializer(data=challenge_submission)
+    def create_submission(self, challenge: Challenge, user: User, file_obj: File) -> Submission:
+        submission = {"challenge": challenge.id, "user": user.id, "src_data": file_obj.read().decode("utf-8")}
+        serializer = SubmissionSerializer(data=submission)
         serializer.is_valid(raise_exception=True)
         try:
-            challenge_submission = serializer.save()
+            submission = serializer.save()
         except IntegrityError as e:
             raise serializers.ValidationError({"error": "Database integrity error"})
-        return challenge_submission
+        return submission

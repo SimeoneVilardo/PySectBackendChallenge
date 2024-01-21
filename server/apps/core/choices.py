@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class ChallengeSubmissionStatusChoices(models.TextChoices):
+class SubmissionStatusChoices(models.TextChoices):
     READY = "ready"
     BROKEN = "broken"
     RUNNING = "running"
