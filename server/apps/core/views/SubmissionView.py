@@ -16,7 +16,12 @@ from server.apps.core.models import Challenge, Submission
 from server.apps.core.serializers import SubmissionSerializer
 from server.apps.core.filters.SubmissionFilter import SubmissionFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.pagination import PageNumberPagination
 
+class SubmissionPageNumberPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 class SubmissionView(ListCreateAPIView, RetrieveAPIView):
     authentication_classes = (CookieTokenAuthentication,)
@@ -27,6 +32,7 @@ class SubmissionView(ListCreateAPIView, RetrieveAPIView):
     lookup_field = "id"
     filter_backends = [DjangoFilterBackend]
     filterset_class = SubmissionFilter
+    pagination_class = SubmissionPageNumberPagination
 
     def get_queryset(self):
         challenge_id = self.kwargs.get("challenge_id")
