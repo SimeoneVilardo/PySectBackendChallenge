@@ -21,6 +21,7 @@
 !docs/
 !docs/**
 !pytest.ini
+!deploy.sh
 server/storage
 docker/config/.env.dev
 docker/config/.env.prod
