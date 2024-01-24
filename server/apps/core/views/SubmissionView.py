@@ -18,6 +18,8 @@ from server.apps.core.filters.SubmissionFilter import SubmissionFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 
+from server.apps.core.services.NotificationQueueService import NotificationQueueService
+
 class SubmissionPageNumberPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
@@ -51,6 +53,7 @@ class SubmissionView(ListCreateAPIView, RetrieveAPIView):
         self.is_valid_python_file(file_obj)
         submission: Submission = self.create_submission(challenge, request.user, file_obj)
         serializer = self.get_serializer(submission)
+        NotificationQueueService.publish(submission)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def is_valid_python_file(self, file_obj: File):

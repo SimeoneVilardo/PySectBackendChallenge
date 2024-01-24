@@ -10,6 +10,7 @@ from server.apps.core.choices import SubmissionStatusChoices
 from server.apps.core.models import Submission
 from server.apps.core.serializers import SubmissionSerializer
 from server.apps.core.services.AwsStepFunctionService import AwsStepFunctionService
+from server.apps.core.services.NotificationQueueService import NotificationQueueService
 
 
 class SubmissionRunView(UpdateAPIView):
@@ -36,6 +37,7 @@ class SubmissionRunView(UpdateAPIView):
         submission.status = SubmissionStatusChoices.RUNNING
         submission.save()
         serializer = self.get_serializer(submission)
+        NotificationQueueService.publish(submission)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
     def create_input_payload(self, submission: Submission):
