@@ -1,14 +1,14 @@
 from django.contrib import admin
-from .models import Challenge, ChallengeSubmission
+from .models import Challenge, Submission
 
 
 @admin.register(Challenge)
 class ChallengeAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "points")
+    list_display = ("id", "name", "subtitle", "points")
     search_fields = ("name",)
 
 
-@admin.register(ChallengeSubmission)
-class ChallengeSubmissionAdmin(admin.ModelAdmin):
+@admin.register(Submission)
+class SubmissionAdmin(admin.ModelAdmin):
     list_display = ("id", "challenge", "status")
-    search_fields = ("challenge",)
+    search_fields = ("id", "challenge", "status")

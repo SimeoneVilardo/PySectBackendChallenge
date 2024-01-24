@@ -1,10 +1,13 @@
+from server.apps.core.choices import SubmissionStatusChoices
 from server.apps.core.models.challenge import Challenge
-from server.apps.core.serializers.ChallengeSubmissionSerializer import ChallengeSubmissionSerializer
 from rest_framework import serializers
 
 
 class ChallengeSerializer(serializers.ModelSerializer):
-    challenge_submissions = ChallengeSubmissionSerializer(many=True, read_only=True)
+    is_completed = serializers.SerializerMethodField()
+
+    def get_is_completed(self, obj):
+        return obj.submissions.filter(status=SubmissionStatusChoices.SUCCESS).exists()
 
     class Meta:
         model = Challenge
