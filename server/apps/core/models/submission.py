@@ -1,6 +1,6 @@
-from django.contrib.auth.models import User
 from django.db import models
 from server.apps.core.choices import SubmissionStatusChoices
+from server.apps.core.models.user import User
 
 
 class Submission(models.Model):

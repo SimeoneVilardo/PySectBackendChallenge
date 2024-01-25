@@ -8,11 +8,11 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import User
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateModelMixin
 from server.apps.core.auth import CookieTokenAuthentication
 from server.apps.core.models import Challenge, Submission
+from server.apps.core.models.user import User
 from server.apps.core.serializers import SubmissionSerializer
 from server.apps.core.filters.SubmissionFilter import SubmissionFilter
 from django_filters.rest_framework import DjangoFilterBackend
