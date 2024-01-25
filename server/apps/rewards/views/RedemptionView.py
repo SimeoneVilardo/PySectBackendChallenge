@@ -1,23 +1,29 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from rest_framework.generics import UpdateAPIView, RetrieveAPIView, ListAPIView
+from rest_framework.permissions import IsAuthenticated
 from server.apps.core.auth import CookieTokenAuthentication
-
 from server.apps.rewards.models.reward import Reward
-from server.apps.rewards.serializers import RewardSerializer
+from server.apps.rewards.serializers import RedemptionSerializer
+from rest_framework import serializers
 
 
-class RewardsView(GenericAPIView, ListModelMixin, RetrieveModelMixin):
+class RedemptionView(ListAPIView, RetrieveAPIView, UpdateAPIView):
     authentication_classes = (CookieTokenAuthentication,)
     permission_classes = (IsAuthenticated,)
-    serializer_class = RewardSerializer
+    serializer_class = RedemptionSerializer
     lookup_field = "id"
 
+    def get_object(self):
+        return super().get_object()
+
     def get_queryset(self):
-        return Reward.objects.all()
-    
-    def get(self, request, *args, **kwargs):
-        if "id" in kwargs:
-            return self.retrieve(request, *args, **kwargs)
+        if self.request.method == 'GET':
+            return self.request.user.rewards.all()
         else:
-            return self.list(request, *args, **kwargs)
+            return Reward.objects.all()
+    
+    def perform_update(self, serializer):
+        if self.request.user.remaining_points < serializer.instance.price:
+            raise serializers.ValidationError("You do not have enough points to redeem this reward")
+        return super().perform_update(serializer)

@@ -5,6 +5,8 @@ from server.apps.core.auth import CookieTokenAuthentication
 
 from server.apps.rewards.models.reward import Reward
 from server.apps.rewards.serializers import RewardSerializer
+from rest_framework.permissions import IsAuthenticated
+from server.apps.core.auth import CookieTokenAuthentication
 
 
 class RewardsView(GenericAPIView, ListModelMixin, RetrieveModelMixin):
