@@ -22,6 +22,22 @@ services:
     networks:
       - pysect-network
 
+  keycloak-local:
+    image: "pysect-backend-sso-local"
+    container_name: pysect-backend-sso-local
+    ports:
+      - "9004:8443"
+    #platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./docker/keycloak/Dockerfile
+    networks:
+      - pysect-network
+    command: start --optimized
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
   web-local:
     image: "pysect-backend-challenge-local"
     container_name: pysect-backend-challenge-local

@@ -1,5 +1,6 @@
 from django.urls import path
 from server.apps.core.views.AuthView import AuthView
+from server.apps.core.views.KeycloakView import KeycloakView
 from server.apps.core.views.SubmissionResultView import SubmissionResultView
 from server.apps.core.views.SubmissionView import SubmissionView
 from server.apps.core.views.HealthView import HealthView
@@ -12,6 +13,7 @@ from server.common.views import create_dispatcher_view
 urlpatterns = [
     # Utils
     path("health/", HealthView.as_view(), name="dummy_api"),
+    path("keycloak/", KeycloakView.as_view(), name="keycloak_api"),
     # Auth
     path("me/", AuthView.as_view(), name="me_api"),
     path("login/", LoginView.as_view(), name="login_api"),

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "rest_framework_api_key",
     "django_jsonform",
     "server.apps.core",
+    "oauth2_provider",
 ]
 
 MIDDLEWARE = [
@@ -141,6 +142,7 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
     "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser",),
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
         "server.apps.core.auth.BearerTokenAuthentication",
     ],
     "EXCEPTION_HANDLER": "server.common.exception_handler.custom_exception_handler",
