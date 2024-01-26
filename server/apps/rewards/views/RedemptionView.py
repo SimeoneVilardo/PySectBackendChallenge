@@ -19,9 +19,9 @@ class RedemptionView(ListAPIView, RetrieveAPIView, UpdateAPIView):
 
     def get_queryset(self):
         if self.request.method == 'GET':
-            return self.request.user.rewards.all()
+            return self.request.user.redeemed_rewards.all()
         else:
-            return Reward.objects.all()
+            return self.request.user.available_rewards.all()
     
     def perform_update(self, serializer):
         if self.request.user.remaining_points < serializer.instance.price:

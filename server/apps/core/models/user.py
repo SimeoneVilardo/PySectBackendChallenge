@@ -13,7 +13,7 @@ class User(auth.models.AbstractUser):
 
     @property
     def used_points(self):
-        used_points = self.rewards.aggregate(total=Sum('price'))['total']
+        used_points = self.redeemed_rewards.aggregate(total=Sum('price'))['total']
         return used_points if used_points else 0
 
     @property
