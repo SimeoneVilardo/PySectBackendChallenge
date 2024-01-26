@@ -1,6 +1,8 @@
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
+from server.apps.core.models.user import User
+
 
 class CookieTokenAuthentication(TokenAuthentication):
     """

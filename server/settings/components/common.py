@@ -33,6 +33,8 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
+AUTH_USER_MODEL = "core.User"
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
     "rest_framework_api_key",
     "django_jsonform",
     "server.apps.core",
+    "server.apps.rewards",
 ]
 
 MIDDLEWARE = [

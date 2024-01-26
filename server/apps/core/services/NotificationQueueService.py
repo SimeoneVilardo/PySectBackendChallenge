@@ -1,7 +1,7 @@
 from django.conf import settings
 import redis
-from django.contrib.auth.models import User
 from server.apps.core.models import Submission
+from server.apps.core.models.user import User
 
 
 class NotificationQueueService:
