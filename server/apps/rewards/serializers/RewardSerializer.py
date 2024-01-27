@@ -11,4 +11,4 @@ class RewardSerializer(serializers.ModelSerializer):
 
     def get_is_redeemed(self, obj):
         user = self.context['request'].user
-        return user.rewards.filter(id=obj.id).exists()
+        return user.redeemed_rewards.filter(id=obj.id).exists()

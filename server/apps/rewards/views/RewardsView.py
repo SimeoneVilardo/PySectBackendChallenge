@@ -16,7 +16,7 @@ class RewardsView(GenericAPIView, ListModelMixin, RetrieveModelMixin):
     lookup_field = "id"
 
     def get_queryset(self):
-        return Reward.objects.all()
+        return self.request.user.available_rewards.all()
     
     def get(self, request, *args, **kwargs):
         if "id" in kwargs:
