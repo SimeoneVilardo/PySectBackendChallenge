@@ -25,10 +25,10 @@ def custom_exception_handler(exc, context):
     return response
 
 def convert_details_to_string(input_data):
+    if isinstance(input_data, str):
+        return input_data
     if isinstance(input_data, list):
-        result = '\n'.join(map(str, input_data))
-    elif isinstance(input_data, dict):
-        result = '\n'.join(map(str, input_data.values()))
-    else:
-        return None
-    return result
+        return '\n'.join(map(str, input_data))
+    if isinstance(input_data, dict):
+        return '\n'.join(map(str, input_data.values()))
+    return None
