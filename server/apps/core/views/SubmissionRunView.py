@@ -19,6 +19,7 @@ class SubmissionRunView(UpdateAPIView):
     queryset = Submission.objects.all()
     lookup_field = "id"
     serializer_class = SubmissionSerializer
+    throttle_scope = 'submissions_run'
 
     def get_object(self):
         try:
@@ -33,7 +34,7 @@ class SubmissionRunView(UpdateAPIView):
         submission: Submission = self.get_object()
         input_payload = self.create_input_payload(submission)
         sfn_name = f"submission-{submission.id}-{settings.DJANGO_ENV}"
-        response = AwsStepFunctionService.invoke_step_function(sfn_name, input_payload)
+        #response = AwsStepFunctionService.invoke_step_function(sfn_name, input_payload)
         submission.status = SubmissionStatusChoices.RUNNING
         submission.save()
         serializer = self.get_serializer(submission)
