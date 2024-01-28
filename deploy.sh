@@ -28,12 +28,10 @@ if [ "$ENVIRONMENT" == "dev" ]; then
   DOCKER_COMPOSE_FILE="docker-compose.dev.yml"
   GIT_BRANCH="dev"
   WEB_CONTAINER="web-dev"
-  PROJECT_NAME="pysect-backend-dev"
 elif [ "$ENVIRONMENT" == "prod" ]; then
   DOCKER_COMPOSE_FILE="docker-compose.prod.yml"
   GIT_BRANCH="master"
   WEB_CONTAINER="web-prod"
-  PROJECT_NAME="pysect-backend-prod"
 else
   echo "Error: Unknown environment. Supported values are dev or prod." >&2
   exit 1
@@ -53,11 +51,11 @@ git pull origin "$GIT_BRANCH"
 wait
 
 echo "Starting new containers..."
-docker compose -f "$DOCKER_COMPOSE_FILE" -p "$PROJECT_NAME" up --build -d
+docker compose -f "$DOCKER_COMPOSE_FILE" up --build -d
 wait
 
 echo "Doing migrations..."
-docker compose -f "$DOCKER_COMPOSE_FILE" -p "$PROJECT_NAME" exec "$WEB_CONTAINER" python manage.py migrate
+docker compose -f "$DOCKER_COMPOSE_FILE" exec "$WEB_CONTAINER" python manage.py migrate
 wait
 
 echo "Up and running!"
