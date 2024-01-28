@@ -6,7 +6,7 @@ services:
     container_name: pysect-backend-db-dev
     restart: unless-stopped
     volumes:
-      - /home/pi/pysect-pgdata-dev:/var/lib/postgresql/data
+      - pgdata-dev:/var/lib/postgresql/data
     networks:
       - nginx-reverse-proxy-net
     env_file:
@@ -31,7 +31,7 @@ services:
         USER_ID: ${UID:-1000}
         USER_GID: ${GID:-1000}
     volumes:
-      - /home/pi/pysect-static-dev:/var/www/django/static
+      - django-static-dev:/var/www/django/static
       - /home/pi/pysect-logs-dev:/var/www/log
       # We should only mount source code in development:
       - .:/code
@@ -50,3 +50,7 @@ services:
 networks:
   nginx-reverse-proxy-net:
     external: true
+
+volumes:
+  pgdata-dev:
+  django-static-dev:
