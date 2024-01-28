@@ -1,4 +1,5 @@
 from django.conf import settings
+from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
@@ -13,7 +14,7 @@ class LoginView(ObtainAuthToken):
         token = response.data.get("token")
         if token is None:
             raise AuthenticationFailed("Invalid credentials")
-        cookie_response = Response()
+        cookie_response = Response(status=status.HTTP_204_NO_CONTENT)
         secure = not settings.DEBUG
         max_age = 60 * 60 * 24 * 30  # 30 days
         cookie_response.set_cookie(

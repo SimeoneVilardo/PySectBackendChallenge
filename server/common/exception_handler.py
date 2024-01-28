@@ -20,5 +20,15 @@ def custom_exception_handler(exc, context):
         Exception: {exc}
         """
     )
+    exc.detail = convert_details_to_string(exc.detail)
     response = exception_handler(exc, context)
     return response
+
+def convert_details_to_string(input_data):
+    if isinstance(input_data, list):
+        result = '\n'.join(map(str, input_data))
+    elif isinstance(input_data, dict):
+        result = '\n'.join(map(str, input_data.values()))
+    else:
+        return None
+    return result
