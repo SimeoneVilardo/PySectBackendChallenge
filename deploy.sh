@@ -54,7 +54,7 @@ cd ..
 rm -rf "$PROJECT_DIR"
 
 echo "Downloading new code..."
-git clone git@github.com:SimeoneVilardo/PySectBackendChallenge.git "$PROJECT_DIR"
+git clone https://github.com/SimeoneVilardo/PySectBackendChallenge.git "$PROJECT_DIR"
 cd "$PROJECT_DIR"
 git checkout "$GIT_BRANCH"
 wait
