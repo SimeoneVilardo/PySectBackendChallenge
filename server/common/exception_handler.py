@@ -24,11 +24,11 @@ def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
     return response
 
-def convert_details_to_string(input_data):
-    if isinstance(input_data, str):
-        return input_data
-    if isinstance(input_data, list):
-        return '\n'.join(map(str, input_data))
-    if isinstance(input_data, dict):
-        return '\n'.join(map(str, input_data.values()))
+def convert_details_to_string(details):
+    if isinstance(details, str):
+        return details
+    if isinstance(details, list):
+        return '\n'.join(map(str, details))
+    if isinstance(details, dict):
+        return '\n'.join(map(str, details.values()))
     return None
