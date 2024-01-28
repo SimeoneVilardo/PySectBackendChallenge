@@ -33,8 +33,6 @@ services:
     volumes:
       - django-static-dev:/var/www/django/static
       - /home/pi/pysect-logs-dev:/var/www/log
-      # We should only mount source code in development:
-      - .:/code
     depends_on:
       - db-dev
     networks:
