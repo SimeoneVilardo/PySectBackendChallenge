@@ -11,4 +11,4 @@ class ChallengeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Challenge
-        exclude = ["input", "output"]
+        exclude = ["input", "output", "users"]
