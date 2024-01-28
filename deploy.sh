@@ -41,21 +41,14 @@ fi
 
 BASE_DIR="/home/pi"
 PROJECT_DIR="$BASE_DIR/$PROJECT_NAME"
+cd "$PROJECT_DIR"
 
 echo "Deploying to $ENVIRONMENT..."
-
 echo "Shutting down containers..."
-cd "$PROJECT_DIR"
 docker compose -f "$DOCKER_COMPOSE_FILE" down
 wait
 
-echo "Deleting old code..."
-cd ..
-rm -rf "$PROJECT_DIR"
-
 echo "Downloading new code..."
-git clone https://github.com/SimeoneVilardo/PySectBackendChallenge.git "$PROJECT_DIR"
-cd "$PROJECT_DIR"
 git checkout "$GIT_BRANCH"
 wait
 git fetch --all
