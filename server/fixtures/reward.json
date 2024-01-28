@@ -1,0 +1,33 @@
+[
+    {
+        "model": "rewards.reward",
+        "pk": 1,
+        "fields": {
+            "name": "Foo",
+            "subtitle": "Foo",
+            "description": "Foo",
+            "price": 1,
+            "redemption": [],
+            "users": [
+                2,
+                3
+            ]
+        }
+    },
+    {
+        "model": "rewards.reward",
+        "pk": 2,
+        "fields": {
+            "name": "Bar",
+            "subtitle": "Bar",
+            "description": "Bar",
+            "price": 3,
+            "redemption": [],
+            "users": [
+                1,
+                2,
+                3
+            ]
+        }
+    }
+]

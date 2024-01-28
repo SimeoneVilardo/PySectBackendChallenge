@@ -1,0 +1,34 @@
+[
+    {
+        "model": "core.submission",
+        "pk": 1,
+        "fields": {
+            "challenge": 1,
+            "user": 3,
+            "src_data": "print(\"hello pysect!\")",
+            "output": "hello pysect!",
+            "error": "Output did not match",
+            "status": "failure",
+            "memory": null,
+            "time": null,
+            "creation_date": "2024-01-28T20:29:50.109Z",
+            "update_date": "2024-01-28T20:30:49.637Z"
+        }
+    },
+    {
+        "model": "core.submission",
+        "pk": 2,
+        "fields": {
+            "challenge": 1,
+            "user": 3,
+            "src_data": "print(\"Hello PySect!\")",
+            "output": "Hello PySect!",
+            "error": "",
+            "status": "success",
+            "memory": null,
+            "time": null,
+            "creation_date": "2024-01-28T20:30:32.952Z",
+            "update_date": "2024-01-28T20:30:32.952Z"
+        }
+    }
+]

@@ -1,0 +1,36 @@
+[
+    {
+        "model": "core.challenge",
+        "pk": 1,
+        "fields": {
+            "name": "Welcome",
+            "subtitle": "A tutorial",
+            "description": "Your task is straightforward yet crucial for laying a strong foundation in Python programming. You are required to write a Python script that does one simple but essential thing: prints the phrase \"Hello PySect!\" to the console.",
+            "points": 1,
+            "input_sample": "[[]]",
+            "output_sample": "[[\"Hello PySect!\"]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "Hello PySect!",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 2,
+        "fields": {
+            "name": "Addition",
+            "subtitle": "Sum two numbers",
+            "description": "In this challenge, your goal is to create a Python script that performs a fundamental operation: addition. You are tasked with writing a script that takes two integer values, adds them together, and prints the result to the console.",
+            "points": 4,
+            "input_sample": "[\r\n[\"2\", \"2\"],\r\n[\"9\", \"8\"],\r\n[\"-2\", \"2\"],\r\n[\"-5\", \"-100\"]\r\n]",
+            "output_sample": "[\r\n[\"4\"],\r\n[\"17\"],\r\n[\"0\"],\r\n[\"-105\"]\r\n]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[\r\n[\"3\", \"3\"],\r\n[\"10\", \"25\"],\r\n[\"-100\", \"2\"],\r\n[\"9\", \"9\"],\r\n[\"-8\", \"-9\"]\r\n]",
+            "output": "6\r\n35\r\n-98\r\n18\r\n-17",
+            "users": []
+        }
+    }
+]
