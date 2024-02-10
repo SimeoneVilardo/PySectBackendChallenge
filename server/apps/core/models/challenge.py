@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.query import QuerySet
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Prefetch
 from server.apps.core.choices import SubmissionStatusChoices
 from server.apps.core.models.submission import Submission
 from server.apps.core.models.user import User
@@ -17,18 +17,16 @@ class ChallengeManager(models.Manager):
         queryset = (
             super()
             .get_queryset()
-            .filter(models.Q(users__isnull=True) | models.Q(users__in=[self.user]))
-            .annotate(
-                is_completed=Exists(
-                    Submission.objects.filter(
-                        challenge_id=OuterRef("pk"),
-                        status=SubmissionStatusChoices.SUCCESS,
-                    )
+        )
+        queryset = queryset.annotate(
+            is_completed=Exists(
+                queryset.filter(
+                    submissions__challenge_id=OuterRef("pk"),
+                    submissions__status=SubmissionStatusChoices.SUCCESS,
                 )
             )
-            .order_by("id")
         )
-        return queryset
+        return queryset.filter(models.Q(users__isnull=True) | models.Q(users__in=[self.user])).order_by("id")
 
 
 class Challenge(models.Model):
@@ -48,10 +46,6 @@ class Challenge(models.Model):
     users = models.ManyToManyField(
         User, related_name="available_challenges", blank=True
     )
-
-    @property
-    def is_completed_prop(self):
-        return self.is_completed
 
     def __str__(self):
         return self.name
