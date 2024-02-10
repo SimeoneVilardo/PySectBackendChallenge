@@ -15,7 +15,6 @@ from server.apps.core.models import Challenge, Submission
 from server.apps.core.models.user import User
 from server.apps.core.serializers import SubmissionSerializer
 from server.apps.core.filters.SubmissionFilter import SubmissionFilter
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 
 from server.apps.core.services.NotificationQueueService import NotificationQueueService
@@ -32,7 +31,6 @@ class SubmissionView(ListCreateAPIView, RetrieveAPIView):
     parser_classes = (MultiPartParser,)
     serializer_class = SubmissionSerializer
     lookup_field = "id"
-    filter_backends = [DjangoFilterBackend]
     filterset_class = SubmissionFilter
     pagination_class = SubmissionPageNumberPagination
 
