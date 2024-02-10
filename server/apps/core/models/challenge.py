@@ -23,6 +23,7 @@ class ChallengeManager(models.Manager):
                 queryset.filter(
                     submissions__challenge_id=OuterRef("pk"),
                     submissions__status=SubmissionStatusChoices.SUCCESS,
+                    submissions__user=self.user
                 )
             )
         )
