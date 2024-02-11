@@ -24,7 +24,7 @@ RUN groupadd -r ${USER} --gid ${USER_GID} && useradd --uid ${USER_ID} -d /code -
   && mkdir -p /var/www/django/static /var/www/django/media \
   && chown ${USER}:${USER} /var/www/django/static /var/www/django/media
 
-COPY --chown=${USER}:${USER} ./requirements.txt /code/
+COPY --chown=${USER}:${USER} . /code
 
 # Project initialization:
 RUN mkdir -p /opt/django \
@@ -62,11 +62,7 @@ RUN groupadd -r ${USER} --gid ${USER_GID} && useradd --uid ${USER_ID} -d /code -
   && chown ${USER}:${USER} /var/www/django/static /var/www/django/media
 
 # Copy code
-COPY --chown=${USER}:${USER} . /code
+COPY --from=builder_image --chown=${USER}:${USER} . /code
 
 # Running as non-root user:
 USER $USER
-
-# Expose django static files
-VOLUME ["/code/storage/"]
-VOLUME ["/var/www/django/static/"]
