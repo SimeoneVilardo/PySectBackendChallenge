@@ -64,5 +64,7 @@ RUN groupadd -r ${USER} --gid ${USER_GID} && useradd --uid ${USER_ID} -d /code -
 # Copy code
 COPY --from=builder_image --chown=${USER}:${USER} . /code
 
+EXPOSE 8000
+
 # Running as non-root user:
 USER $USER
