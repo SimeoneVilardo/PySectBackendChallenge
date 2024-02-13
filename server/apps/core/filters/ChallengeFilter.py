@@ -4,6 +4,7 @@ from django_filters import rest_framework as filters
 
 class ChallengeFilter(filters.FilterSet):
     is_completed = filters.BooleanFilter(label='is_completed')
+    name = filters.CharFilter(field_name='name', lookup_expr='icontains')
 
     sort = filters.OrderingFilter(
         fields=(

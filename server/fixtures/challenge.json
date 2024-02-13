@@ -32,5 +32,532 @@
             "output": "6\r\n35\r\n-98\r\n18\r\n-17",
             "users": []
         }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 3,
+        "fields": {
+            "name": "Foo",
+            "subtitle": "Foo",
+            "description": "Foo",
+            "points": 2,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 4,
+        "fields": {
+            "name": "Bar",
+            "subtitle": "Bar",
+            "description": "Bar",
+            "points": 3,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 5,
+        "fields": {
+            "name": "Baz",
+            "subtitle": "Baz",
+            "description": "Baz",
+            "points": 4,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 6,
+        "fields": {
+            "name": "Pippo",
+            "subtitle": "Pippo",
+            "description": "Pippo",
+            "points": 4,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 7,
+        "fields": {
+            "name": "Pluto",
+            "subtitle": "Pluto",
+            "description": "Pluto",
+            "points": 5,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 8,
+        "fields": {
+            "name": "Alpha",
+            "subtitle": "Alpha",
+            "description": "Alpha",
+            "points": 4,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 9,
+        "fields": {
+            "name": "Beta",
+            "subtitle": "Beta",
+            "description": "Beta",
+            "points": 3,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 10,
+        "fields": {
+            "name": "Gamma",
+            "subtitle": "Gamma",
+            "description": "Gamma",
+            "points": 2,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 11,
+        "fields": {
+            "name": "Delta",
+            "subtitle": "Delta",
+            "description": "Delta",
+            "points": 1,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 12,
+        "fields": {
+            "name": "Epsilon",
+            "subtitle": "Epsilon",
+            "description": "Epsilon",
+            "points": 1,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 13,
+        "fields": {
+            "name": "Echo",
+            "subtitle": "Echo",
+            "description": "Echo",
+            "points": 3,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 14,
+        "fields": {
+            "name": "Zeta",
+            "subtitle": "Zeta",
+            "description": "Zeta",
+            "points": 2,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 15,
+        "fields": {
+            "name": "Eta",
+            "subtitle": "Eta",
+            "description": "Eta",
+            "points": 5,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 16,
+        "fields": {
+            "name": "Theta",
+            "subtitle": "Theta",
+            "description": "Theta",
+            "points": 4,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 17,
+        "fields": {
+            "name": "Iota",
+            "subtitle": "Iota",
+            "description": "Iota",
+            "points": 3,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 18,
+        "fields": {
+            "name": "Kappa",
+            "subtitle": "Kappa",
+            "description": "Kappa",
+            "points": 2,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 19,
+        "fields": {
+            "name": "Lambda",
+            "subtitle": "Lambda",
+            "description": "Lambda",
+            "points": 2,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 20,
+        "fields": {
+            "name": "Mu",
+            "subtitle": "Mu",
+            "description": "Mu",
+            "points": 3,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 21,
+        "fields": {
+            "name": "Nu",
+            "subtitle": "Nu",
+            "description": "Nu",
+            "points": 5,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 22,
+        "fields": {
+            "name": "Xi",
+            "subtitle": "Xi",
+            "description": "Xi",
+            "points": 6,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 23,
+        "fields": {
+            "name": "Omicron",
+            "subtitle": "Omicron",
+            "description": "Omicron",
+            "points": 5,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 24,
+        "fields": {
+            "name": "Pi",
+            "subtitle": "Pi",
+            "description": "Pi",
+            "points": 5,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 25,
+        "fields": {
+            "name": "Rho",
+            "subtitle": "Rho",
+            "description": "Rho",
+            "points": 4,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 26,
+        "fields": {
+            "name": "Sigma",
+            "subtitle": "Sigma",
+            "description": "Sigma",
+            "points": 3,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 27,
+        "fields": {
+            "name": "Tau",
+            "subtitle": "Tau",
+            "description": "Tau",
+            "points": 3,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 28,
+        "fields": {
+            "name": "Upsilon",
+            "subtitle": "Upsilon",
+            "description": "Upsilon",
+            "points": 1,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 29,
+        "fields": {
+            "name": "Phi",
+            "subtitle": "Phi",
+            "description": "Phi",
+            "points": 2,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 30,
+        "fields": {
+            "name": "Chi",
+            "subtitle": "Chi",
+            "description": "Chi",
+            "points": 1,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 31,
+        "fields": {
+            "name": "Psi",
+            "subtitle": "Psi",
+            "description": "Psi",
+            "points": 2,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 32,
+        "fields": {
+            "name": "Omega",
+            "subtitle": "Omega",
+            "description": "Omega",
+            "points": 3,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
+    },
+    {
+        "model": "core.challenge",
+        "pk": 33,
+        "fields": {
+            "name": "AlphaPrime",
+            "subtitle": "AlphaPrime",
+            "description": "AlphaPrime",
+            "points": 1,
+            "input_sample": "[[]]",
+            "output_sample": "[[]]",
+            "memory_limit": 128,
+            "time_limit": 5,
+            "input": "[[]]",
+            "output": "",
+            "users": []
+        }
     }
 ]
