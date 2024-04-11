@@ -8,8 +8,6 @@ LABEL vendor="PySect"
 
 # user args
 ARG USER=web
-ARG USER_ID=1000
-ARG USER_GID=1000
 
 ENV PYTHONFAULTHANDLER=1 \
   PYTHONUNBUFFERED=1 \
@@ -18,13 +16,7 @@ ENV PYTHONFAULTHANDLER=1 \
 
 WORKDIR /code
 
-# Setting up proper permissions:
-RUN groupadd -r ${USER} --gid ${USER_GID} && useradd --uid ${USER_ID} -d /code -r -g ${USER} ${USER} \
-  && chown ${USER}:${USER} -R /code \
-  && mkdir -p /var/www/django/static /var/www/django/media \
-  && chown ${USER}:${USER} /var/www/django/static /var/www/django/media
-
-COPY --chown=${USER}:${USER} ./requirements.txt /code/
+COPY ./requirements.txt /code/
 
 # Project initialization:
 RUN mkdir -p /opt/django \
@@ -40,8 +32,6 @@ FROM python:3.11-bullseye as runner_image
 
 # user args
 ARG USER=web
-ARG USER_ID=1000
-ARG USER_GID=1000
 
 ENV PYTHONFAULTHANDLER=1 \
   PYTHONUNBUFFERED=1 \
@@ -55,14 +45,8 @@ ENV PYTHONPATH=/opt/django/pypkgs/lib/python3.11/site-packages:/code/ \
 
 WORKDIR /code
 
-# Setting up proper permissions:
-RUN groupadd -r ${USER} --gid ${USER_GID} && useradd --uid ${USER_ID} -d /code -r -g ${USER} ${USER} \
-  && chown ${USER}:${USER} -R /code \
-  && mkdir -p /var/www/django/static /var/www/django/media \
-  && chown ${USER}:${USER} /var/www/django/static /var/www/django/media
-
 # Copy code
-COPY --chown=${USER}:${USER} . /code
+COPY . /code
 
 # Running as non-root user:
 USER $USER
