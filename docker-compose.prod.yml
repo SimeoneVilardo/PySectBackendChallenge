@@ -24,7 +24,7 @@ services:
   web-prod:
     image: "pysect-backend-challenge-prod"
     container_name: pysect-backend-challenge-prod
-    platform: linux/arm64
+    platform: linux/arm64/v8
     build:
       target: builder_image
       context: .
