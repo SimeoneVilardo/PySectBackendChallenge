@@ -6,9 +6,6 @@ FROM python:3.11-bullseye AS builder_image
 LABEL maintainer="simeone.vilardo@gmail.com"
 LABEL vendor="PySect"
 
-# user args
-ARG USER=web
-
 ENV PYTHONFAULTHANDLER=1 \
   PYTHONUNBUFFERED=1 \
   PYTHONHASHSEED=random \
@@ -30,9 +27,6 @@ RUN echo "source /opt/django/pypkgs/bin/activate" >> /root/.bashrc
 # Cleanup with a new stage:
 FROM python:3.11-bullseye as runner_image
 
-# user args
-ARG USER=web
-
 ENV PYTHONFAULTHANDLER=1 \
   PYTHONUNBUFFERED=1 \
   PYTHONHASHSEED=random \
@@ -47,9 +41,6 @@ WORKDIR /code
 
 # Copy code
 COPY . /code
-
-# Running as non-root user:
-USER $USER
 
 # Expose django static files
 VOLUME ["/code/storage/"]
