@@ -22,17 +22,9 @@ services:
       - nginx-reverse-proxy-net
 
   web-dev:
-    image: "pysect-backend-challenge-dev"
+    image: "simeonevilardo/pysect-backend-challenge-dev"
     container_name: pysect-backend-challenge-dev
     platform: linux/arm64/v8
-    build:
-      target: builder_image
-      context: .
-      dockerfile: ./docker/django/Dockerfile
-      args:
-        # See: https://github.com/wemake-services/wemake-django-template/issues/1518
-        USER_ID: ${UID:-1000}
-        USER_GID: ${GID:-1000}
     volumes:
       - django-static-dev:/var/www/django/static
       - /home/pi/pysect-logs-dev:/var/www/log
