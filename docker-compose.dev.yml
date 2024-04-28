@@ -24,7 +24,7 @@ services:
   web-dev:
     image: "pysect-backend-challenge-dev"
     container_name: pysect-backend-challenge-dev
-    #platform: linux/amd64
+    platform: linux/arm64/v8
     build:
       target: builder_image
       context: .
