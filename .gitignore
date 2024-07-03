@@ -22,6 +22,9 @@
 !docs/**
 !pytest.ini
 !deploy.sh
+!.devcontainer
+!.devcontainer/docker-compose.yml
+!.devcontainer/devcontainer.json
 server/storage
 docker/config/.env.dev
 docker/config/.env.prod
