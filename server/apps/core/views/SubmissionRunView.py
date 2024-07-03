@@ -1,3 +1,4 @@
+import json
 from django.conf import settings
 from django.http import Http404
 from rest_framework.generics import UpdateAPIView
@@ -45,5 +46,5 @@ class SubmissionRunView(UpdateAPIView):
         payload = {}
         payload["id"] = submission.id
         payload["src"] = submission.src_data
-        payload["input"] = submission.challenge.input
+        payload["input"] = json.dumps(submission.challenge.input)
         return payload

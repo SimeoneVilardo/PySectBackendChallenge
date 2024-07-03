@@ -38,11 +38,11 @@ class Challenge(models.Model):
     subtitle = models.CharField(max_length=255)
     description = models.TextField()
     points = models.IntegerField(choices=[(i, str(i)) for i in range(1, 11)])
-    input_sample = models.TextField()
-    output_sample = models.TextField()
+    input_sample = models.JSONField()
+    output_sample = models.JSONField()
     memory_limit = models.IntegerField()
     time_limit = models.IntegerField()
-    input = models.TextField()
+    input = models.JSONField()
     output = models.TextField()
     users = models.ManyToManyField(
         User, related_name="available_challenges", blank=True
