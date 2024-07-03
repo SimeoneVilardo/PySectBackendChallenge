@@ -42,6 +42,8 @@ WORKDIR /code
 # Copy code
 COPY . /code
 
+RUN chmod +x /code/docker/django/local_run.sh
+
 # Expose django static files
 VOLUME ["/code/storage/"]
 VOLUME ["/var/www/django/static/"]
