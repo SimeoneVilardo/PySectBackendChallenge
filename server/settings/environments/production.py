@@ -1,1 +1,1 @@
-CSRF_TRUSTED_ORIGINS = ["https://py.sect.letz.dev"]
+CSRF_TRUSTED_ORIGINS = ["https://pysect.simeonevilardo.com"]

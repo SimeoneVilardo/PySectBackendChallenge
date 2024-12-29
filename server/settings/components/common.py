@@ -155,7 +155,7 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "server.common.exception_handler.custom_exception_handler",
 }
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "https://py.sect.letz.dev"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "https://pysect.simeonevilardo.com"]
 
 REDIS_HOST = config("REDIS_HOST")
 REDIS_PORT = config("REDIS_PORT", cast=int)
