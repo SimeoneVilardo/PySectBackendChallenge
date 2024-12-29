@@ -18,11 +18,11 @@ COPY ./requirements.txt /code/
 # Project initialization:
 RUN mkdir -p /opt/django \
   && /bin/bash -c 'python -m venv /opt/django/pypkgs \
-  && source /opt/django/pypkgs/bin/activate \
+  && . /opt/django/pypkgs/bin/activate \
   && pip install -r requirements.txt'
 
 ENV PATH="/opt/django/pypkgs/bin:$PATH"
-RUN echo "source /opt/django/pypkgs/bin/activate" >> /root/.bashrc
+RUN echo ". /opt/django/pypkgs/bin/activate" >> /root/.bashrc
 
 # Cleanup with a new stage:
 FROM python:3.12-alpine as runner_image
