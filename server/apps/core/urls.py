@@ -7,11 +7,13 @@ from server.apps.core.views.SubmissionRunView import SubmissionRunView
 from server.apps.core.views.ChallengeView import ChallengeView
 from server.apps.core.views.LoginView import LoginView
 from server.apps.core.views.LogoutView import LogoutView
+from server.apps.core.views.VersionView import VersionView
 from server.common.views import create_dispatcher_view
 
 urlpatterns = [
     # Utils
     path("health/", HealthView.as_view(), name="dummy_api"),
+    path("version/", VersionView.as_view(), name="version_api"),
     # Auth
     path("me/", AuthView.as_view(), name="me_api"),
     path("login/", LoginView.as_view(), name="login_api"),
